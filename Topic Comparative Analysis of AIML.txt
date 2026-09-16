@@ -1,0 +1,12 @@
+Title :AI/ML-Based Landslide Risk Assessment Using Environmental and Geospatial Data
+
+Objectives--
+
+1) To study landslide risk factors in the North Eastern Region of India using historical landslide records, rainfall, terrain, vegetation, and other available environmental data.
+
+2) To collect and integrate relevant datasets from sources such as the NASA Global Landslide Catalog, Indian rainfall datasets, SRTM terrain data, and Sentinel-2 satellite-derived vegetation information.
+
+3) To preprocess and prepare the dataset for machine learning, including handling missing values, feature extraction, normalization, and selection of relevant features.
+To develop and train multiple AI/ML models for landslide risk assessment using the prepared dataset.
+
+4) To develop and train multiple AI/ML models for landslide risk assessment using the prepared dataset.
