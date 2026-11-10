@@ -1,0 +1,184 @@
+# LandslideGuard Application Configuration
+# Edit this file to customize application behaviour.
+# Do not store secrets here — use .env for API keys.
+
+# ─────────────────────────────────────────────
+# APPLICATION
+# ─────────────────────────────────────────────
+app:
+  name: "LandslideGuard"
+  version: "1.0.0"
+  description: "AI-Based Dynamic Landslide Risk Prediction and Early Warning System"
+  environment: "development"   # development | production
+  log_level: "INFO"            # DEBUG | INFO | WARNING | ERROR
+
+# ─────────────────────────────────────────────
+# PATHS
+# ─────────────────────────────────────────────
+paths:
+  data_raw: "data/raw"
+  data_processed: "data/processed"
+  models: "models"
+  reports: "reports"
+  logs: "logs"
+  database: "data/landslide_guard.db"
+
+# ─────────────────────────────────────────────
+# RISK ENGINE
+# ─────────────────────────────────────────────
+risk:
+  # Risk category probability thresholds (upper bound, exclusive)
+  # These thresholds are PROVISIONAL and have not been calibrated
+  # against verified landslide observations.
+  thresholds:
+    low: 0.35
+    moderate: 0.55
+    high: 0.75
+    very_high: 1.01   # everything above high
+
+  # Labels for each category
+  categories:
+    - Low
+    - Moderate
+    - High
+    - Very High
+
+  # Minimum data freshness for dynamic risk estimates (hours)
+  data_freshness_hours: 6
+
+  # If environmental inputs are missing, raise warning rather than using zeros
+  require_environmental_inputs: false
+
+  # Baseline risk scoring (used when no trained model is available)
+  baseline:
+    enabled: true
+    weights:
+      slope_degrees: 0.30
+      rainfall_24h_mm: 0.25
+      rainfall_72h_mm: 0.20
+      elevation_m: 0.10
+      soil_moisture: 0.10
+      vegetation_index: 0.05
+
+# ─────────────────────────────────────────────
+# ALERT MANAGEMENT
+# ─────────────────────────────────────────────
+alerts:
+  # Minimum risk category to trigger an alert: Low | Moderate | High | Very High
+  trigger_category: "High"
+  # Cooldown period between repeated alerts for the same location (minutes)
+  cooldown_minutes: 120
+  # Maximum active unacknowledged alerts to display
+  max_active_alerts: 50
+  # Audit log retention (days)
+  audit_retention_days: 30
+
+# ─────────────────────────────────────────────
+# MODEL
+# ─────────────────────────────────────────────
+model:
+  # Name of the saved model file (in paths.models directory)
+  active_model: "best_model.pkl"
+  # Name of the feature preprocessor pipeline
+  preprocessor: "preprocessor.pkl"
+  # Random seed for reproducibility
+  random_seed: 42
+  # Test split fraction
+  test_size: 0.20
+  # Validation split fraction (from training set)
+  val_size: 0.15
+  # Class imbalance strategy: none | smote | class_weight | undersample
+  imbalance_strategy: "class_weight"
+  # Cross-validation folds
+  cv_folds: 5
+
+# ─────────────────────────────────────────────
+# FEATURES
+# ─────────────────────────────────────────────
+features:
+  # Required features for model prediction
+  required:
+    - slope_degrees
+    - elevation_m
+    - rainfall_24h_mm
+    - rainfall_72h_mm
+
+  # Optional features (model degrades gracefully if absent)
+  optional:
+    - rainfall_1h_mm
+    - vegetation_index
+    - soil_moisture
+    - soil_type_encoded
+    - land_cover_encoded
+
+  # Feature ranges for out-of-distribution detection
+  ranges:
+    latitude: [-90.0, 90.0]
+    longitude: [-180.0, 180.0]
+    slope_degrees: [0.0, 90.0]
+    elevation_m: [-500.0, 9000.0]
+    rainfall_1h_mm: [0.0, 500.0]
+    rainfall_24h_mm: [0.0, 2000.0]
+    rainfall_72h_mm: [0.0, 5000.0]
+    vegetation_index: [-1.0, 1.0]
+    soil_moisture: [0.0, 1.0]
+
+# ─────────────────────────────────────────────
+# DATA PROVIDERS
+# ─────────────────────────────────────────────
+providers:
+  weather:
+    name: "Open-Meteo"
+    base_url: "https://api.open-meteo.com/v1"
+    timeout_seconds: 10
+    max_retries: 3
+    retry_backoff_factor: 2
+    cache_ttl_seconds: 3600   # 1 hour
+    attribution: "Weather data by Open-Meteo.com (CC BY 4.0)"
+
+  terrain:
+    name: "Open-Elevation"
+    base_url: "https://api.open-elevation.com/api/v1"
+    timeout_seconds: 15
+    max_retries: 2
+    retry_backoff_factor: 2
+    cache_ttl_seconds: 86400  # 24 hours (terrain does not change)
+    attribution: "Elevation data from SRTM via Open-Elevation API"
+
+# ─────────────────────────────────────────────
+# MAP
+# ─────────────────────────────────────────────
+map:
+  # Default centre (India)
+  default_lat: 22.5
+  default_lon: 82.0
+  default_zoom: 5
+  tile_provider: "CartoDB positron"
+  # Risk category colours (CSS hex)
+  risk_colors:
+    Low: "#2ecc71"
+    Moderate: "#f39c12"
+    High: "#e74c3c"
+    Very High: "#8e44ad"
+
+# ─────────────────────────────────────────────
+# DATABASE
+# ─────────────────────────────────────────────
+database:
+  # SQLite WAL mode for concurrent access
+  wal_mode: true
+  # Maximum alerts to keep in history
+  max_alert_history: 1000
+
+# ─────────────────────────────────────────────
+# SYNTHETIC DATA (development only)
+# ─────────────────────────────────────────────
+synthetic_data:
+  # Number of synthetic samples to generate
+  n_samples: 2000
+  # Approximate geographic region for synthetic points
+  # (Western Ghats + Himalayan foothills region)
+  lat_range: [8.0, 35.0]
+  lon_range: [72.0, 97.0]
+  random_seed: 42
+  positive_fraction: 0.25   # fraction of samples that are landslide events

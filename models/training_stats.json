@@ -1,0 +1,11 @@
+{
+  "feature_medians": {
+    "slope_degrees": 15.298895999754091,
+    "elevation_m": 413.38281833758924,
+    "rainfall_24h_mm": 22.422899921581052,
+    "rainfall_72h_mm": 57.778159908876454,
+    "rainfall_1h_mm": 4.5165096749893525,
+    "vegetation_index": 0.4915149146487221,
+    "soil_moisture": 0.41583789812548677
+  }
+}
