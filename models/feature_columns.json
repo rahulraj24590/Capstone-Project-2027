@@ -1,0 +1,11 @@
+{
+  "feature_columns": [
+    "slope_degrees",
+    "elevation_m",
+    "rainfall_24h_mm",
+    "rainfall_72h_mm",
+    "rainfall_1h_mm",
+    "vegetation_index",
+    "soil_moisture"
+  ]
+}

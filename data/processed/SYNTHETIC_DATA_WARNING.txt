@@ -1,0 +1,12 @@
+WARNING: SYNTHETIC TEST DATA
+================================
+
+The dataset in this directory is SYNTHETIC and was generated
+by scripts/generate_synthetic_data.py for pipeline testing only.
+
+It does NOT represent real landslide observations.
+It MUST NOT be used to claim real-world predictive performance.
+
+Generated: 2026-11-10T21:45:53.539311
+N samples: 2000
+Positive fraction: 0.2500
