@@ -211,3 +211,4 @@ def render_footer() -> None:
     </div>
     """
     st.markdown(footer_html, unsafe_allow_html=True)
+

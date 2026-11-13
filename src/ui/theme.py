@@ -78,11 +78,28 @@ def inject_theme_css() -> None:
         background-attachment: fixed;
     }}
 
-    /* Main Container Padding */
+    /* Streamlit Top Header Bar */
+    header[data-testid="stHeader"], [data-testid="stHeader"], .stAppHeader {{
+        background: rgba(8, 14, 27, 0.75) !important;
+        backdrop-filter: blur(12px) !important;
+        -webkit-backdrop-filter: blur(12px) !important;
+    }}
+
+    /* Main Container Padding — prevents topbar from being clipped under Streamlit header */
     .block-container {{
-        padding-top: 1.25rem !important;
-        padding-bottom: 2.5rem !important;
-        max-width: 1400px;
+        padding-top: 4.75rem !important;
+        padding-bottom: 3rem !important;
+        padding-left: 2rem !important;
+        padding-right: 2rem !important;
+        max-width: 1440px;
+    }}
+
+    @media (max-width: 768px) {{
+        .block-container {{
+            padding-top: 5.25rem !important;
+            padding-left: 1rem !important;
+            padding-right: 1rem !important;
+        }}
     }}
 
     /* Sidebar Navigation & Styling */
@@ -92,7 +109,7 @@ def inject_theme_css() -> None:
     }}
 
     section[data-testid="stSidebar"] > div:first-child {{
-        padding-top: 1.2rem;
+        padding-top: 1.8rem;
     }}
 
     section[data-testid="stSidebar"] [role="radiogroup"] {{
@@ -579,3 +596,4 @@ def style_fig(fig: go.Figure, height: int = 320, showlegend: bool | None = None)
         tickfont=dict(color=TEXT_MUTED),
     )
     return fig
+
