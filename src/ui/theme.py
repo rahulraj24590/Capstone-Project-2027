@@ -79,20 +79,61 @@ def inject_theme_css() -> None:
     }}
 
     /* ─────────────────────────────────────────────
-       Streamlit Top Header & Toolbar Configuration
-       Streamlit's native header is 3.75rem (60px) high and positioned absolutely.
-       Making the background transparent with pointer-events: none ensures it never
-       blocks clicks or casts an opaque dark strip over application content, while
-       re-enabling pointer-events on buttons preserves Deploy and menu interactions.
+       1. Application & Viewport Container
+       ───────────────────────────────────────────── */
+    [data-testid="stAppViewContainer"],
+    .stAppViewContainer {{
+        display: flex !important;
+        flex-direction: row !important;
+        height: 100vh !important;
+        height: 100dvh !important;
+        overflow: hidden !important;
+    }}
+
+    /* Main body column holding Streamlit header and stMain */
+    [data-testid="stAppViewContainer"] > div:last-child,
+    .stAppViewContainer > div:last-child {{
+        display: flex !important;
+        flex-direction: column !important;
+        height: 100vh !important;
+        height: 100dvh !important;
+        overflow: hidden !important;
+        position: relative !important;
+        flex: 1 1 auto !important;
+        min-width: 0 !important;
+    }}
+
+    /* ─────────────────────────────────────────────
+       2. Section 1: Streamlit Native Toolbar Header
+       Normal document flow (position: relative), occupying its own
+       dedicated 3.75rem (60px) space at the very top.
+       It never overlaps stMain because it is a preceding flex sibling.
        ───────────────────────────────────────────── */
     header[data-testid="stHeader"],
     [data-testid="stHeader"],
     .stAppHeader {{
-        background: transparent !important;
+        position: relative !important;
+        top: auto !important;
+        left: auto !important;
+        right: auto !important;
         height: 3.75rem !important;
         min-height: 3.75rem !important;
-        pointer-events: none !important;
-        z-index: 99999 !important;
+        width: 100% !important;
+        flex-shrink: 0 !important;
+        background: {BG_DARK} !important;
+        border-bottom: 1px solid {BORDER_DEFAULT} !important;
+        z-index: 1000 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: flex-end !important;
+    }}
+
+    /* Native toolbar controls (Deploy button, running man, ⋮ menu) */
+    [data-testid="stToolbar"] {{
+        position: relative !important;
+        top: auto !important;
+        right: auto !important;
+        margin-right: 1.25rem !important;
     }}
 
     header[data-testid="stHeader"] button,
@@ -105,20 +146,42 @@ def inject_theme_css() -> None:
     }}
 
     /* ─────────────────────────────────────────────
-       Main Content Container — Robust Global Spacing
-       Streamlit's native header height is 3.75rem (60px). Setting padding-top
-       to 6rem (96px) guarantees a clean, unclipped 2.25rem (36px) margin below
-       the toolbar across all Windows display scaling factors (100%, 125%, 150%)
-       and prevents any cutoff of topbars, breadcrumbs, or headings.
+       3. Section 2: Main Scrolling Container (stMain)
+       Positioned directly underneath the native header.
+       Takes up the remaining viewport height and scrolls independently.
+       ───────────────────────────────────────────── */
+    section[data-testid="stMain"],
+    .stMain {{
+        flex: 1 1 auto !important;
+        height: calc(100vh - 3.75rem) !important;
+        height: calc(100dvh - 3.75rem) !important;
+        min-height: 0 !important;
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+        position: relative !important;
+        top: 0 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+    }}
+
+    /* ─────────────────────────────────────────────
+       4. Sections 3, 4, 5: Main Content Block Container
+       Occupies normal document flow inside stMain:
+       - LandslideGuard custom navigation (.lg-topbar / landing page navbar)
+       - Breadcrumb section
+       - Page title and description (render_page_header)
+       - Main page content
        ───────────────────────────────────────────── */
     div[data-testid="stMainBlockContainer"],
     .stMainBlockContainer,
     .block-container {{
-        padding-top: 6rem !important;
+        padding-top: 1.5rem !important;
         padding-bottom: 3.5rem !important;
         padding-left: 2.25rem !important;
         padding-right: 2.25rem !important;
         max-width: 1460px !important;
+        width: 100% !important;
         margin-left: auto !important;
         margin-right: auto !important;
     }}
@@ -127,7 +190,7 @@ def inject_theme_css() -> None:
         div[data-testid="stMainBlockContainer"],
         .stMainBlockContainer,
         .block-container {{
-            padding-top: 6.25rem !important;
+            padding-top: 1.25rem !important;
             padding-left: 1.5rem !important;
             padding-right: 1.5rem !important;
         }}
@@ -137,27 +200,30 @@ def inject_theme_css() -> None:
         div[data-testid="stMainBlockContainer"],
         .stMainBlockContainer,
         .block-container {{
-            padding-top: 6.5rem !important;
+            padding-top: 1rem !important;
             padding-left: 1rem !important;
             padding-right: 1rem !important;
         }}
     }}
 
     /* ─────────────────────────────────────────────
-       Sidebar Layout & Vertical Alignment
+       5. Sidebar Alignment
        ───────────────────────────────────────────── */
     section[data-testid="stSidebar"] {{
         background: {BG_SIDEBAR} !important;
         border-right: 1px solid {BORDER_DEFAULT} !important;
+        height: 100vh !important;
+        height: 100dvh !important;
     }}
 
     [data-testid="stSidebarHeader"] {{
         background: transparent !important;
-        padding-top: 0.5rem !important;
+        padding-top: 0.75rem !important;
+        padding-bottom: 0.5rem !important;
     }}
 
     [data-testid="stSidebarUserContent"] {{
-        padding-top: 0.4rem !important;
+        padding-top: 0.25rem !important;
         padding-left: 1rem !important;
         padding-right: 1rem !important;
     }}
