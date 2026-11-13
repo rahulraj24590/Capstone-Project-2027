@@ -20,10 +20,10 @@ import streamlit as st
 
 # Backgrounds
 BG_DARK = "#080E1B"
-BG_SECONDARY = "#0D1728"
+BG_SECONDARY = "#101A2B"
 BG_SIDEBAR = "#101A2B"
-BG_CARD = "#131F32"
-BG_CARD_HOVER = "#18263E"
+BG_CARD = "#152238"
+BG_CARD_HOVER = "#1B2A40"
 
 # Primary & Gradients
 PRIMARY_BLUE = "#38BDF8"
@@ -37,7 +37,7 @@ TEXT_MUTED = "#94A3B8"
 TEXT_DIM = "#64748B"
 
 # Borders & Accents
-BORDER_DEFAULT = "rgba(148, 163, 184, 0.15)"
+BORDER_DEFAULT = "rgba(148, 163, 184, 0.16)"
 BORDER_GLOW = "rgba(56, 189, 248, 0.35)"
 BORDER_FOCUS = "rgba(56, 189, 248, 0.65)"
 
@@ -633,6 +633,127 @@ def inject_theme_css() -> None:
         border: 1px solid rgba(255, 255, 255, 0.2) !important;
         color: #ffffff !important;
         box-shadow: 0 4px 15px rgba(37, 99, 235, 0.35) !important;
+    }}
+
+    /* Segmented Tabs */
+    .stTabs [data-baseweb="tab-list"] {{
+        gap: 0.5rem !important;
+        background: {BG_SECONDARY} !important;
+        padding: 0.35rem 0.5rem !important;
+        border-radius: 12px !important;
+        border: 1px solid {BORDER_DEFAULT} !important;
+    }}
+
+    .stTabs [data-baseweb="tab"] {{
+        border-radius: 8px !important;
+        padding: 0.5rem 1rem !important;
+        font-weight: 600 !important;
+        font-size: 0.88rem !important;
+        color: {TEXT_MUTED} !important;
+        border: 1px solid transparent !important;
+        background: transparent !important;
+        transition: all 0.2s ease !important;
+    }}
+
+    .stTabs [data-baseweb="tab"]:hover {{
+        color: {TEXT_MAIN} !important;
+        background: rgba(56, 189, 248, 0.08) !important;
+    }}
+
+    .stTabs [aria-selected="true"] {{
+        background: {BG_CARD} !important;
+        color: {PRIMARY_BLUE} !important;
+        border: 1px solid rgba(56, 189, 248, 0.35) !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35) !important;
+    }}
+
+    .stTabs [data-baseweb="tab-highlight"],
+    .stTabs [data-baseweb="tab-border"] {{
+        display: none !important;
+    }}
+
+    /* Inputs, Number Inputs, Selectboxes */
+    .stTextInput input,
+    .stNumberInput input,
+    .stSelectbox div[data-baseweb="select"] > div {{
+        background: {BG_CARD} !important;
+        border: 1px solid {BORDER_DEFAULT} !important;
+        border-radius: 10px !important;
+        color: {TEXT_MAIN} !important;
+        font-size: 0.88rem !important;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2) !important;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease !important;
+    }}
+
+    .stTextInput input:focus,
+    .stNumberInput input:focus,
+    .stSelectbox div[data-baseweb="select"]:focus-within > div {{
+        border-color: {PRIMARY_BLUE} !important;
+        box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.25) !important;
+    }}
+
+    /* File Uploader */
+    [data-testid="stFileUploaderDropzone"] {{
+        background: {BG_CARD} !important;
+        border: 2px dashed rgba(56, 189, 248, 0.35) !important;
+        border-radius: 14px !important;
+        padding: 1.5rem 1.25rem !important;
+        transition: all 0.2s ease !important;
+    }}
+
+    [data-testid="stFileUploaderDropzone"]:hover {{
+        border-color: {PRIMARY_BLUE} !important;
+        background: rgba(56, 189, 248, 0.06) !important;
+    }}
+
+    /* Dataframes & Tables */
+    [data-testid="stDataFrame"],
+    .stDataFrame {{
+        border-radius: 12px !important;
+        overflow: hidden !important;
+        border: 1px solid {BORDER_DEFAULT} !important;
+        background: {BG_CARD} !important;
+        box-shadow: 0 4px 18px rgba(0, 0, 0, 0.25) !important;
+    }}
+
+    /* Expanders */
+    [data-testid="stExpander"] {{
+        background: {BG_CARD} !important;
+        border: 1px solid {BORDER_DEFAULT} !important;
+        border-radius: 12px !important;
+        overflow: hidden !important;
+        margin-bottom: 0.85rem !important;
+    }}
+
+    [data-testid="stExpander"] summary {{
+        font-weight: 600 !important;
+        color: {TEXT_MAIN} !important;
+        padding: 0.75rem 1rem !important;
+    }}
+
+    [data-testid="stExpander"] summary:hover {{
+        color: {PRIMARY_BLUE} !important;
+    }}
+
+    /* Chat Messages for AI Assistant */
+    [data-testid="stChatMessage"] {{
+        background: {BG_CARD} !important;
+        border: 1px solid {BORDER_DEFAULT} !important;
+        border-radius: 14px !important;
+        padding: 0.9rem 1.2rem !important;
+        margin-bottom: 0.85rem !important;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25) !important;
+    }}
+
+    [data-testid="stChatMessage"]:has([data-testid="chatAvatarIcon-user"]) {{
+        background: rgba(37, 99, 235, 0.12) !important;
+        border-color: rgba(56, 189, 248, 0.35) !important;
+    }}
+
+    [data-testid="stChatInput"] {{
+        border-radius: 14px !important;
+        border: 1px solid rgba(148, 163, 184, 0.2) !important;
+        background: {BG_SECONDARY} !important;
     }}
 
     /* Forms */

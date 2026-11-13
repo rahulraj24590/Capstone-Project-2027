@@ -413,7 +413,7 @@ with st.sidebar:
         source_badge = '<span style="color:#EAB308; font-weight:600;">⚠️ Synthetic Dev Data</span>' if is_synth else '<span style="color:#22C55E; font-weight:600;">✅ Authentic Data</span>'
         alert_color = "#EF4444" if active_alerts_n > 0 else "#22C55E"
         st.markdown(f"""
-        <div class="sidebar-card" style="background:#131F32; border:1px solid rgba(148,163,184,0.15); border-radius:12px; padding:0.85rem 1rem;">
+        <div class="sidebar-card" style="background:#152238; border:1px solid rgba(148,163,184,0.16); border-radius:12px; padding:0.85rem 1rem; box-shadow: 0 4px 16px rgba(0,0,0,0.25);">
             <div style="font-weight:700; color:#F8FAFC; margin-bottom:0.4rem; font-size:0.82rem; text-transform:uppercase; letter-spacing:0.04em;">System Status</div>
             <div style="display:flex; justify-content:space-between; margin-bottom:0.25rem;">
                 <span style="color:#94A3B8;">Stations:</span>
