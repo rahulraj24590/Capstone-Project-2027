@@ -1,7 +1,8 @@
 # LandslideGuard — Dataset Report
 
 **Project:** LandslideGuard  
-**Date:** October 2026
+**Date:** November 2026
+**Status:** Integrated (Synthetic Training Dataset + Live Open-Meteo Forecast & Archive API)
 
 ---
 
@@ -45,10 +46,13 @@ Exclusively for testing the data pipeline, model training code, and dashboard co
 | `is_synthetic` | int | 1 | Always 1 (provenance label) |
 
 ### Statistics
-- Total records: 2000
-- Positive class (landslide_occurred=1): ~25%
+- Total records: 2,000 (`19` columns in `data/processed/dataset.parquet`)
+- Positive class (`landslide_occurred=1`): 500 (25.0%)
+- Negative class (`landslide_occurred=0`): 1,500 (75.0%)
+- Provenance label (`is_synthetic=1`): 2,000 / 2,000 (100% synthetic development data)
 - Temporal range: January 2018 – December 2023
-- Geographic extent: Indian subcontinent bounding box
+- Geographic extent: Indian subcontinent bounding box (8°N–35°N, 68°E–97°E)
+- Metadata columns also present: `event_date`, `source_name`, `country`, `landslide_type`, `trigger`, `fatalities`
 
 ---
 
@@ -105,7 +109,15 @@ Weather data by Open-Meteo.com (CC BY 4.0)
 
 ---
 
-## 5. Data Inventory CSV
+## 5. India Regional Boundary & Official Alert Sources
+
+- **geoBoundaries IND ADM1 & ADM2 (`data/india_boundaries/`):** Downloaded via `scripts/download_india_boundaries.py` (`36` States/UTs + `735` Districts with spatial containment + nearest-island fallback join and verified `EPSG:4326` representative coordinates inside each district polygon). GeoJSON geometry files are `.gitignore`d while metadata syncs into SQLite (`india_states`, `india_districts`).
+- **NDMA SACHET CAP Feed (`src/data_providers/sachet_provider.py`):** Live Common Alerting Protocol JSON (`FetchAllAlertDetails`) with `ETag` conditional caching and RSS XML (`rss_india.xml`) fallback. Official alerts persist into SQLite `official_warnings` strictly separated from experimental ML alerts.
+- **IMD Operational API (`src/data_providers/imd_provider.py`):** Supports official documented `api.imd.gov.in/api/v1/` endpoints (`staterainfall`, `districtrainfall`, `districtwarning`, `districtnowcast`, `state_district_rainfall_forecast`) using `.env` credentials (`IMD_API_KEY`), reporting `"Not configured"` cleanly when absent.
+
+---
+
+## 6. Data Inventory CSV
 
 See [dataset_inventory.csv](dataset_inventory.csv) for the machine-readable inventory.
 

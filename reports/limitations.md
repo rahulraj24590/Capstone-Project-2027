@@ -2,7 +2,7 @@
 
 **Project:** LandslideGuard: AI-Based Dynamic Landslide Risk Prediction and Early Warning System  
 **Type:** Academic Capstone Project — B.Tech Computer Science and Engineering  
-**Date:** October 2026
+**Date:** November 2026
 
 > [!CAUTION]
 > This document is required reading before deploying or interpreting any output from this system.
@@ -124,7 +124,7 @@ Not all features are available for every location at every time step. This syste
 | Validation | Retrospective inventory | Prospective event prediction |
 | Output interpretation | Relative terrain tendency | Time-varying risk level |
 
-This system partially implements both but does not have real-time data feeds or prospective validation.
+This system partially implements both using Open-Meteo environmental feeds and interactive dynamic assessment, but lacks dense real-time field sensor telemetry (inclinometers, piezometers) and prospective event validation.
 
 ---
 
@@ -132,11 +132,11 @@ This system partially implements both but does not have real-time data feeds or 
 
 The alert system in LandslideGuard is **experimental**:
 
-- Thresholds (Low/Moderate/High/Very High) are heuristically defined, not calibrated against real outcomes.
-- Cooldown periods are arbitrary defaults.
-- No communication pipeline to first responders or emergency management agencies.
-- No fail-safe mechanisms for data feed interruption.
-- No accountability or audit trail for alert-based decisions.
+- Thresholds (Low/Moderate/High/Very High) are heuristically defined (`0.35 / 0.55 / 0.75`), not calibrated against real outcomes.
+- Cooldown periods (`120` minutes default in `config/settings.yaml`) are configurable defaults, not operationally tuned.
+- External email and SMS channels (`src/alerts/notifications.py`) are strictly disabled by default and have no live emergency agency dispatch integration.
+- No fail-safe hardware/telemetry redundancy for external API outages (degrades to cached snapshots or manual inputs).
+- Although technical lifecycle transitions (`new` -> `acknowledged` -> `resolved`) and timestamps are logged in SQLite (`alert_acknowledgements`), there is no institutional governance or legal accountability framework for human decision-making.
 - Not compliant with any formal disaster risk management standard.
 
 **Alerts from this system must not be used as emergency warnings.**
@@ -173,6 +173,46 @@ This project is an educational demonstration of how machine learning and geospat
 
 ---
 
+## 12. Phase 6 Environmental Analytics, Forecasting & Drift Limitations
+
+- **Baseline Archive Dependence:** Anomaly detection and multi-scale/seasonal trends depend on historical ERA5 reanalysis archive availability (`>= 30` valid days for Z-score/quantiles, `>= 60` for Isolation Forest, `>= 15` per season); offline or short baselines yield explicit `Unavailable` states rather than simulated baselines.
+- **No Exact Timing Prediction:** 24h/48h/72h risk trajectories propagate forecasted weather inputs through models trained on **synthetic development data**. They indicate directional meteorological sensitivity only and **cannot predict exact landslide failure timing**.
+- **Forecast Sensitivity vs. Calibration:** Lead-time uncertainty bands reflect rainfall input sensitivity (`±25%` scaled by horizon) rather than empirically calibrated conformal intervals.
+- **Ground-Truth Outcome Latency:** Drift monitoring compares live records against synthetic training baselines and cannot confirm real-world predictive degradation until sufficient verified ground-truth outcomes (`prediction_outcomes`, minimum `10` samples across outcomes) are logged.
+
+---
+
+## 13. Phase 7 Geospatial, Terrain & Satellite Limitations
+
+- **Historical Hotspots are Non-Predictive:** DBSCAN clusters and Kernel Density Estimation delineate spatial concentrations of *past recorded events*. They do **NOT** predict future landslide occurrence or classify an area as a future hotspot without dynamic meteorological triggering, geotechnical slope conditions, and pore-water pressure accumulation.
+- **Topographic Wetness Index Requires Specific Catchment Area:** TWI ($ln(a / \tan(\beta))$) strictly requires upslope contributing area per unit contour width ($a$). Point SRTM stencils and isolated tiles lack full hydrological basin routing; TWI calculation is refused rather than fabricated with arbitrary catchment areas.
+- **Sentinel-2 Spatial Resolution (10 m):** The 10 m Ground Sample Distance of Sentinel-2 VNIR bands cannot resolve small-scale, shallow translational slides or debris slumps smaller than $100\text{ m}^2$.
+- **Cloud & Shadow Contamination:** Optical remote sensing in mountainous monsoonal regions suffers heavy cloud cover and steep terrain cast shadows. Cloud-obscured pixels are masked out, creating observation gaps during peak rainfall periods.
+- **Non-Landslide Vegetation Change Confounding:** Drops in NDVI can be caused by seasonal phenology, agricultural harvest, wildfire, forestry timber clearing, or drought. Automated change detection is an **unverified screening indicator** that flags candidate zones requiring high-resolution optical, drone, or ground inspection.
+
+---
+
+## 14. Phase 8 AI Assistant & Computer Vision Limitations
+
+- **AI Assistant Information Bounds:** The AI Assistant only possesses knowledge grounded directly in the project's SQLite database tables, loaded ML model metadata, Open-Meteo telemetry, and project documentation. It cannot access real-time unmonitored local news, unindexed micro-catchments, or unrecorded historical archives. If a location is not in the database, it refuses estimation rather than improvising answers.
+- **Superficial Optical Sensing Only (No Subsurface Pore Pressure):** The experimental computer vision module analyzes optical surface reflectance (color and high-frequency edge gradients). It has **zero ability to measure subterranean pore water pressure**, soil water saturation, groundwater table depth, or internal slip-surface shear strength—the primary physical drivers of slope failure.
+- **Illumination, Perspective & Shadow Confounding in CV:** Optical photographs of natural terrain suffer from cast shadows, tree branch shadows, lighting variations, and steep perspective distortions. High-contrast shadows may be falsely identified as surface cracks, while genuine fissures in heavily shaded hollows may be missed.
+- **Computer Vision is NOT an Operational Early Warning:** An image classification result or elevated visual anomaly score is **NOT proof of an active landslide** and must **NEVER independently trigger an official warning**, evacuation notice, or emergency alert.
+- **Multilingual Guidance is Educational, Not Operational Dispatch:** The multilingual safety guide provides verified civil-defense advisories from NDMA and GSI for public awareness. It does not replace real-time localized warnings dispatched by district magistrates, NDRF, SDRF, or state disaster management centers.
+
+---
+
+## 15. Phase 9 Disaster Response & Community Intelligence Limitations
+
+- **Static Road Network vs. Active Disaster Blind Spots:** The OSRM routing engine queries static OpenStreetMap highway topologies. It has **zero awareness of real-time mudflow inundation, severed bridges, fallen trees, rockfall blockages, or emergency police cordons**. Driving routes are strictly informational and must never be navigated during an active disaster without explicit clearance from local traffic police and disaster management authorities (NDRF/SDMA).
+- **Crowd-Sourced Information Noise & Subjectivity:** Community hazard submissions depend on public reporting. Reports may contain inaccurate coordinates, misidentified minor soil washouts, exaggerated hazard tiers, or duplicate entries. Strict administrative review (`submitted` $\to$ `under_review` $\to$ `verified` / `rejected`) is mandatory before field dispatch.
+- **Strict Data Segregation Invariant:** Community reports are **strictly segregated** in the `community_reports` database table and never automatically enter scientific training sets (`observations`). This prevents subjective or unverified crowd reports from biasing model training or corrupting empirical ground-truth catalogs.
+- **Retrospective Event Replay Limitations:** Re-evaluating historical events re-runs the trained pipeline using historical records available for that epoch. It cannot simulate prospective forecasting conditions, real-time telemetry lag, or unobserved micro-catchment precipitation spikes, and must not be cited as operational forecasting proof.
+- **PDF Report Snapshot Shelf-Life:** Downloaded PDF risk reports represent static point-in-time snapshots. Mountain weather, antecedent rainfall, and slope saturation evolve rapidly; generated PDFs lose validity within hours and must not be used for protracted emergency planning.
+- **Offline Cache Stale Telemetry Risk:** While the offline cache maintains interface availability during mountain grid or telecommunication failures, it presents historical telemetry explicitly stamped with `is_live: False`. In disconnected environments, personnel must rely on primary civil defense radio networks (VHF/wireless) rather than aging cached dashboard data.
+
+---
+
 ## Summary Table
 
 | Limitation | Severity | Mitigation in This Project |
@@ -185,3 +225,13 @@ This project is an educational demonstration of how machine learning and geospat
 | No operational alert pipeline | Moderate | Dashboard alerts only; not emergency warnings |
 | Missing data in some regions | Moderate | Graceful degradation with warnings |
 | False negative risk | High | Documented; no operational claim made |
+| Historical hotspot over-interpretation | High | Mandatory anti-hallucination notice; non-predictive warning |
+| Satellite change false positives | Moderate | Mandatory unverified indicator label; NDVI disclaimer |
+| DEM hydrological data absence | Moderate | Strict TWI refusal without catchment area |
+| CV optical surface limit (no subsurface sensing) | **Critical** | Mandatory experimental disclaimer; never triggers alerts |
+| CV shadow and illumination false positives | High | Multi-feature heuristics; clearly labeled experimental |
+| AI Assistant boundary limitation | Moderate | Strict anti-hallucination refusal for unindexed places |
+| Road routing active blockage blind spots | **Critical** | Mandatory routing disclaimer; requires NDRF/SDMA clearance |
+| Crowd-sourced report subjectivity | Moderate | Strict multi-stage audit lifecycle; segregation from training data |
+| Retrospective replay hindsight bias | Moderate | Explicit non-prospective notice; interval data refusal |
+| Static PDF report obsolescence | Low | Timestamped snapshot badges; academic notice watermarked |

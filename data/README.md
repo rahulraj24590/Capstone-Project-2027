@@ -35,9 +35,13 @@ See `dataset_inventory.csv` for the complete inventory.
 | Source | Status | Notes |
 |--------|--------|-------|
 | Synthetic Development Dataset | ✅ Available | Labelled as synthetic; pipeline testing only |
+| geoBoundaries India ADM1 / ADM2 | ✅ Cached Locally | `36` States/UTs (`adm1_states.geojson`) + `735` Districts (`adm2_districts.geojson`) + index (`india_districts_index.json`) via `scripts/download_india_boundaries.py` |
+| Open-Meteo API | 🔄 Live fetch | No API key required (coordinate-level forecasts/reanalysis) |
+| NDMA SACHET CAP Feed | 🔄 Live fetch | Official India CAP alerts (`FetchAllAlertDetails` / RSS XML fallback); strictly separate from ML alerts |
+| IMD API (`api.imd.gov.in`) | ⚙️ Configurable | Official IMD endpoints implemented (`IMD_API_KEY`); shows `"Not configured"` until key added to `.env` |
 | NASA Global Landslide Catalog | ⛔ Not obtained | Requires NASA Earthdata account |
-| Open-Meteo API | 🔄 Live fetch | No API key required |
-| SRTM DEM | ⛔ Not obtained | Requires USGS EarthExplorer account |
+| SRTM DEM (1-arcsec ~30m) | 🔄 Point SRTM / GeoTIFF | Open-Elevation 4-point stencil fallback + local GeoTIFF reading via Rasterio/PIL |
+| Copernicus Sentinel-2 MSI Level-2A | 🔄 Integrated / Scenarios | B04 (Red 665nm) + B08 (NIR 842nm) + SCL cloud mask; 10m Ground Sample Distance; open Copernicus Data Space |
 
 ## Data Quality Rules
 
