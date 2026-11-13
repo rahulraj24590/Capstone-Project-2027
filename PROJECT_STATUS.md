@@ -389,11 +389,12 @@
 | Two-Image Gradient Hero | ✅ Completed | Side-by-side Himalayan and Western Ghats mountains with cinematic dark-to-violet gradient |
 | SaaS Landing Page (`🌐 Home & Showcase`) | ✅ Completed | Real DB statistics, 8 capabilities, 4-step workflow, India regional showcase, AI XAI showcase |
 | Executive Overview Mission Control (`🏠 Overview`) | ✅ Completed | 5 real-time KPI metrics, integrated Folium map with clustering, risk & rainfall analytics |
-| Header Overlap & Top Cutoff Root Cause Audit | ✅ Completed | Identified Emotion CSS `padding-top: 1.25rem` override in `.block-container` which placed content 40px under native `3.75rem` `stHeader` |
-| Global Top Spacing Resolution | ✅ Completed | Set `.stMainBlockContainer` / `.block-container` `padding-top: 6rem !important;` (96px) providing clean 36px clearance under Streamlit toolbar across 100%, 125%, and 150% DPI scalings |
-| Transparent Pointer-Safe Header | ✅ Completed | Styled `stHeader` to `background: transparent; pointer-events: none` while keeping `Deploy` and menu buttons interactive |
+| Header Overlap & Top Cutoff Root Cause Audit | ✅ Completed | Identified Emotion CSS absolute positioning on native `stHeader` (`height: 3.75rem`) which decoupled it from `.stMain`, causing floating overlap over content |
+| Flexbox Document Flow Restructuring | ✅ Completed | Converted `stAppViewContainer > div:last-child` into a flex column with `stHeader` in normal flow (`position: relative; flex-shrink: 0`) and `stMain` scrolling independently below it (`flex: 1 1 auto; height: calc(100vh - 3.75rem)`) |
+| Strict Section Hierarchy Enforced | ✅ Completed | 1. Streamlit native toolbar -> 2. Custom navbar -> 3. Breadcrumb section -> 4. Page title -> 5. Main content |
+| Transparent Pointer-Safe Header | ✅ Completed | Native `Deploy` and `⋮` buttons remain fully interactive while toolbar never obscures or overlaps application content |
 | Sidebar Header Alignment | ✅ Completed | Aligned `stSidebarHeader` and `stSidebarUserContent` with the main page header plane |
-| Responsive Layout Verification | ✅ Completed | Added flex-wrapping and responsive media queries for 1920px desktop, 1440px laptop, 1024px tablet, and mobile |
+| Responsive Layout Verification | ✅ Completed | Tested across 1920px, 1440px, 1366px, tablet, and mobile with zero clipping |
 | Full Test Suite Verification | ✅ Completed | 238 passed, 0 failed in pytest; 0 exceptions in Streamlit headless AppTest |
 
 ---
