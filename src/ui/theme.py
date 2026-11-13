@@ -78,38 +78,88 @@ def inject_theme_css() -> None:
         background-attachment: fixed;
     }}
 
-    /* Streamlit Top Header Bar */
-    header[data-testid="stHeader"], [data-testid="stHeader"], .stAppHeader {{
-        background: rgba(8, 14, 27, 0.75) !important;
-        backdrop-filter: blur(12px) !important;
-        -webkit-backdrop-filter: blur(12px) !important;
+    /* ─────────────────────────────────────────────
+       Streamlit Top Header & Toolbar Configuration
+       Streamlit's native header is 3.75rem (60px) high and positioned absolutely.
+       Making the background transparent with pointer-events: none ensures it never
+       blocks clicks or casts an opaque dark strip over application content, while
+       re-enabling pointer-events on buttons preserves Deploy and menu interactions.
+       ───────────────────────────────────────────── */
+    header[data-testid="stHeader"],
+    [data-testid="stHeader"],
+    .stAppHeader {{
+        background: transparent !important;
+        height: 3.75rem !important;
+        min-height: 3.75rem !important;
+        pointer-events: none !important;
+        z-index: 99999 !important;
     }}
 
-    /* Main Container Padding — prevents topbar from being clipped under Streamlit header */
+    header[data-testid="stHeader"] button,
+    header[data-testid="stHeader"] a,
+    [data-testid="stHeader"] button,
+    [data-testid="stHeader"] a,
+    [data-testid="stToolbar"],
+    [data-testid="stHeaderActionElements"] {{
+        pointer-events: auto !important;
+    }}
+
+    /* ─────────────────────────────────────────────
+       Main Content Container — Robust Global Spacing
+       Streamlit's native header height is 3.75rem (60px). Setting padding-top
+       to 6rem (96px) guarantees a clean, unclipped 2.25rem (36px) margin below
+       the toolbar across all Windows display scaling factors (100%, 125%, 150%)
+       and prevents any cutoff of topbars, breadcrumbs, or headings.
+       ───────────────────────────────────────────── */
+    div[data-testid="stMainBlockContainer"],
+    .stMainBlockContainer,
     .block-container {{
-        padding-top: 4.75rem !important;
-        padding-bottom: 3rem !important;
-        padding-left: 2rem !important;
-        padding-right: 2rem !important;
-        max-width: 1440px;
+        padding-top: 6rem !important;
+        padding-bottom: 3.5rem !important;
+        padding-left: 2.25rem !important;
+        padding-right: 2.25rem !important;
+        max-width: 1460px !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
     }}
 
-    @media (max-width: 768px) {{
+    @media (max-width: 1024px) {{
+        div[data-testid="stMainBlockContainer"],
+        .stMainBlockContainer,
         .block-container {{
-            padding-top: 5.25rem !important;
+            padding-top: 6.25rem !important;
+            padding-left: 1.5rem !important;
+            padding-right: 1.5rem !important;
+        }}
+    }}
+
+    @media (max-width: 640px) {{
+        div[data-testid="stMainBlockContainer"],
+        .stMainBlockContainer,
+        .block-container {{
+            padding-top: 6.5rem !important;
             padding-left: 1rem !important;
             padding-right: 1rem !important;
         }}
     }}
 
-    /* Sidebar Navigation & Styling */
+    /* ─────────────────────────────────────────────
+       Sidebar Layout & Vertical Alignment
+       ───────────────────────────────────────────── */
     section[data-testid="stSidebar"] {{
         background: {BG_SIDEBAR} !important;
         border-right: 1px solid {BORDER_DEFAULT} !important;
     }}
 
-    section[data-testid="stSidebar"] > div:first-child {{
-        padding-top: 1.8rem;
+    [data-testid="stSidebarHeader"] {{
+        background: transparent !important;
+        padding-top: 0.5rem !important;
+    }}
+
+    [data-testid="stSidebarUserContent"] {{
+        padding-top: 0.4rem !important;
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
     }}
 
     section[data-testid="stSidebar"] [role="radiogroup"] {{
@@ -148,8 +198,10 @@ def inject_theme_css() -> None:
     /* Top Navigation Bar Component */
     .lg-topbar {{
         display: flex;
+        flex-wrap: wrap;
         align-items: center;
         justify-content: space-between;
+        gap: 0.85rem;
         background: rgba(19, 31, 50, 0.75);
         backdrop-filter: blur(12px);
         -webkit-backdrop-filter: blur(12px);
@@ -162,12 +214,14 @@ def inject_theme_css() -> None:
 
     .lg-topbar-left {{
         display: flex;
+        flex-wrap: wrap;
         align-items: center;
         gap: 0.85rem;
     }}
 
     .lg-breadcrumb {{
         display: flex;
+        flex-wrap: wrap;
         align-items: center;
         gap: 0.5rem;
         font-size: 0.82rem;
@@ -181,6 +235,7 @@ def inject_theme_css() -> None:
 
     .lg-topbar-right {{
         display: flex;
+        flex-wrap: wrap;
         align-items: center;
         gap: 0.75rem;
     }}
