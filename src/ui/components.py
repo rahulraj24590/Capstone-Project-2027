@@ -158,6 +158,48 @@ def experimental_banner(extra: str = "") -> None:
     st.markdown(banner_html, unsafe_allow_html=True)
 
 
+def render_kpi_card(
+    label: str,
+    value: str,
+    subtext: str = "",
+    delta: str = "",
+    delta_color: str = "normal",
+    icon: str = "",
+) -> None:
+    """Render a modern SaaS KPI card with dark navy elevation."""
+    delta_html = ""
+    if delta:
+        d_color = RISK_LOW if delta_color in ("normal", "green") else (RISK_CRITICAL if delta_color in ("inverse", "red") else TEXT_MUTED)
+        delta_html = f'<div style="font-size:0.75rem; color:{d_color}; margin-top:0.35rem; font-weight:600;">{delta}</div>'
+    sub_html = f'<div style="font-size:0.75rem; color:{TEXT_DIM}; margin-top:0.25rem;">{subtext}</div>' if subtext else ""
+    icon_html = f'<div style="font-size:1.4rem; opacity:0.85;">{icon}</div>' if icon else ""
+
+    html = f"""
+    <div class="lg-stat-card">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+            <div class="lg-stat-label">{label}</div>
+            {icon_html}
+        </div>
+        <div class="lg-stat-val">{value}</div>
+        {delta_html}
+        {sub_html}
+    </div>
+    """
+    st.markdown(html, unsafe_allow_html=True)
+
+
+def render_empty_state(title: str, message: str, icon: str = "🔍") -> None:
+    """Render a sleek empty-state card when data or search results are not found."""
+    html = f"""
+    <div class="lg-card" style="text-align:center; padding:2.5rem 1.5rem;">
+        <div style="font-size:2.5rem; margin-bottom:0.75rem;">{icon}</div>
+        <div style="font-size:1.1rem; font-weight:700; color:{TEXT_MAIN}; margin-bottom:0.4rem;">{title}</div>
+        <div style="font-size:0.88rem; color:{TEXT_MUTED}; max-width:480px; margin:0 auto;">{message}</div>
+    </div>
+    """
+    st.markdown(html, unsafe_allow_html=True)
+
+
 def render_footer() -> None:
     """Render the enterprise footer across the website."""
     footer_html = f"""
