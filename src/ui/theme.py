@@ -83,46 +83,26 @@ def inject_theme_css() -> None:
        ───────────────────────────────────────────── */
     [data-testid="stAppViewContainer"],
     .stAppViewContainer {{
-        display: flex !important;
-        flex-direction: row !important;
         height: 100vh !important;
         height: 100dvh !important;
         overflow: hidden !important;
-    }}
-
-    /* Main body column holding Streamlit header and stMain */
-    [data-testid="stAppViewContainer"] > div:last-child,
-    .stAppViewContainer > div:last-child {{
-        display: flex !important;
-        flex-direction: column !important;
-        height: 100vh !important;
-        height: 100dvh !important;
-        overflow: hidden !important;
-        position: relative !important;
-        flex: 1 1 auto !important;
-        min-width: 0 !important;
     }}
 
     /* ─────────────────────────────────────────────
        2. Section 1: Streamlit Native Toolbar Header
-       Normal document flow (position: relative), occupying its own
-       dedicated 3.75rem (60px) space at the very top.
-       It never overlaps stMain because it is a preceding flex sibling.
+       Pinned at the top with glassmorphic backdrop.
+       Leaves interactive controls accessible and visible.
        ───────────────────────────────────────────── */
     header[data-testid="stHeader"],
     [data-testid="stHeader"],
     .stAppHeader {{
-        position: relative !important;
-        top: auto !important;
-        left: auto !important;
-        right: auto !important;
+        background: rgba(8, 14, 27, 0.95) !important;
+        backdrop-filter: blur(16px) !important;
+        -webkit-backdrop-filter: blur(16px) !important;
+        border-bottom: 1px solid {BORDER_DEFAULT} !important;
         height: 3.75rem !important;
         min-height: 3.75rem !important;
-        width: 100% !important;
-        flex-shrink: 0 !important;
-        background: {BG_DARK} !important;
-        border-bottom: 1px solid {BORDER_DEFAULT} !important;
-        z-index: 1000 !important;
+        z-index: 99999 !important;
         display: flex !important;
         align-items: center !important;
         justify-content: flex-end !important;
@@ -130,9 +110,8 @@ def inject_theme_css() -> None:
 
     /* Native toolbar controls (Deploy button, running man, ⋮ menu) */
     [data-testid="stToolbar"] {{
-        position: relative !important;
-        top: auto !important;
-        right: auto !important;
+        display: flex !important;
+        align-items: center !important;
         margin-right: 1.25rem !important;
     }}
 
@@ -147,36 +126,29 @@ def inject_theme_css() -> None:
 
     /* ─────────────────────────────────────────────
        3. Section 2: Main Scrolling Container (stMain)
-       Positioned directly underneath the native header.
-       Takes up the remaining viewport height and scrolls independently.
+       Takes up the viewport and scrolls smoothly.
        ───────────────────────────────────────────── */
     section[data-testid="stMain"],
     .stMain {{
         flex: 1 1 auto !important;
-        height: calc(100vh - 3.75rem) !important;
-        height: calc(100dvh - 3.75rem) !important;
+        height: 100vh !important;
+        height: 100dvh !important;
         min-height: 0 !important;
         overflow-y: auto !important;
         overflow-x: hidden !important;
         position: relative !important;
-        top: 0 !important;
-        display: flex !important;
-        flex-direction: column !important;
-        align-items: center !important;
     }}
 
     /* ─────────────────────────────────────────────
        4. Sections 3, 4, 5: Main Content Block Container
-       Occupies normal document flow inside stMain:
-       - LandslideGuard custom navigation (.lg-topbar / landing page navbar)
-       - Breadcrumb section
-       - Page title and description (render_page_header)
-       - Main page content
+       Generous 6rem (96px) top padding ensures that custom
+       navigation bars, logos, brand titles, and breadcrumbs
+       start safely 36px below the 60px Streamlit header.
        ───────────────────────────────────────────── */
     div[data-testid="stMainBlockContainer"],
     .stMainBlockContainer,
     .block-container {{
-        padding-top: 1.5rem !important;
+        padding-top: 6rem !important;
         padding-bottom: 3.5rem !important;
         padding-left: 2.25rem !important;
         padding-right: 2.25rem !important;
@@ -184,13 +156,14 @@ def inject_theme_css() -> None:
         width: 100% !important;
         margin-left: auto !important;
         margin-right: auto !important;
+        box-sizing: border-box !important;
     }}
 
     @media (max-width: 1024px) {{
         div[data-testid="stMainBlockContainer"],
         .stMainBlockContainer,
         .block-container {{
-            padding-top: 1.25rem !important;
+            padding-top: 6rem !important;
             padding-left: 1.5rem !important;
             padding-right: 1.5rem !important;
         }}
@@ -200,7 +173,7 @@ def inject_theme_css() -> None:
         div[data-testid="stMainBlockContainer"],
         .stMainBlockContainer,
         .block-container {{
-            padding-top: 1rem !important;
+            padding-top: 6.25rem !important;
             padding-left: 1rem !important;
             padding-right: 1rem !important;
         }}
@@ -261,21 +234,159 @@ def inject_theme_css() -> None:
         font-size: 0.88rem !important;
     }}
 
-    /* Top Navigation Bar Component */
+    /* ─────────────────────────────────────────────
+       6. Landing Page Navbar Component
+       Structured flex container with explicit alignment,
+       contained icon, safe line-height, and responsive wrapping.
+       ───────────────────────────────────────────── */
+    .lg-landing-navbar {{
+        min-height: 72px;
+        box-sizing: border-box;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+        background: rgba(21, 34, 56, 0.85);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid {BORDER_DEFAULT};
+        border-radius: 16px;
+        padding: 0.85rem 1.75rem;
+        margin-top: 0;
+        margin-bottom: 2rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+        position: relative;
+        overflow: visible;
+    }}
+
+    .lg-navbar-brand {{
+        display: flex;
+        align-items: center;
+        gap: 0.85rem;
+        margin: 0;
+        padding: 0;
+    }}
+
+    .lg-brand-icon {{
+        width: 44px;
+        height: 44px;
+        min-width: 44px;
+        min-height: 44px;
+        border-radius: 10px;
+        background: rgba(56, 189, 248, 0.12);
+        border: 1px solid rgba(56, 189, 248, 0.35);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        line-height: 1;
+        flex-shrink: 0;
+        box-sizing: border-box;
+        overflow: hidden;
+    }}
+
+    .lg-brand-text {{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: flex-start;
+        margin: 0;
+        padding: 0;
+    }}
+
+    .lg-brand-title {{
+        font-size: 1.25rem;
+        font-weight: 800;
+        line-height: 1.3;
+        letter-spacing: -0.02em;
+        color: {TEXT_MAIN};
+        margin: 0;
+        padding: 0;
+        display: block;
+    }}
+
+    .lg-brand-title span {{
+        color: {PRIMARY_BLUE};
+    }}
+
+    .lg-brand-subtitle {{
+        font-size: 0.70rem;
+        font-weight: 700;
+        color: {TEXT_MUTED};
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        line-height: 1.2;
+        margin-top: 2px;
+        margin-bottom: 0;
+        padding: 0;
+        display: block;
+    }}
+
+    .lg-navbar-links {{
+        display: flex;
+        align-items: center;
+        gap: 1.6rem;
+        font-size: 0.88rem;
+        font-weight: 600;
+        color: {TEXT_MUTED};
+        line-height: 1;
+        margin: 0;
+        padding: 0;
+    }}
+
+    .lg-nav-active {{
+        color: {PRIMARY_BLUE};
+        font-weight: 700;
+    }}
+
+    .lg-navbar-badge {{
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.45rem 0.95rem;
+        border-radius: 8px;
+        font-size: 0.78rem;
+        font-weight: 700;
+        background: rgba(56, 189, 248, 0.12);
+        border: 1px solid rgba(56, 189, 248, 0.35);
+        color: {PRIMARY_BLUE};
+        line-height: 1;
+        box-sizing: border-box;
+        white-space: nowrap;
+    }}
+
+    @media (max-width: 900px) {{
+        .lg-landing-navbar {{
+            padding: 0.75rem 1.25rem;
+            gap: 0.75rem;
+        }}
+        .lg-navbar-links {{
+            display: none;
+        }}
+    }}
+
+    /* ─────────────────────────────────────────────
+       7. Top Navigation Bar (Internal Pages)
+       ───────────────────────────────────────────── */
     .lg-topbar {{
+        min-height: 58px;
+        box-sizing: border-box;
         display: flex;
         flex-wrap: wrap;
         align-items: center;
         justify-content: space-between;
         gap: 0.85rem;
-        background: rgba(19, 31, 50, 0.75);
+        background: rgba(21, 34, 56, 0.85);
         backdrop-filter: blur(12px);
         -webkit-backdrop-filter: blur(12px);
         border: 1px solid {BORDER_DEFAULT};
         border-radius: 14px;
         padding: 0.75rem 1.25rem;
-        margin-bottom: 1.25rem;
+        margin-top: 0;
+        margin-bottom: 1.5rem;
         box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+        position: relative;
     }}
 
     .lg-topbar-left {{
@@ -283,6 +394,50 @@ def inject_theme_css() -> None:
         flex-wrap: wrap;
         align-items: center;
         gap: 0.85rem;
+    }}
+
+    .lg-topbar-brand {{
+        display: flex;
+        align-items: center;
+        gap: 0.65rem;
+    }}
+
+    .lg-topbar-icon {{
+        width: 34px;
+        height: 34px;
+        min-width: 34px;
+        min-height: 34px;
+        border-radius: 8px;
+        background: rgba(56, 189, 248, 0.12);
+        border: 1px solid rgba(56, 189, 248, 0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+        line-height: 1;
+        flex-shrink: 0;
+        box-sizing: border-box;
+        overflow: hidden;
+    }}
+
+    .lg-topbar-title {{
+        font-size: 1.15rem;
+        font-weight: 800;
+        color: {TEXT_MAIN};
+        line-height: 1.25;
+        margin: 0;
+        padding: 0;
+    }}
+
+    .lg-topbar-title span {{
+        color: {PRIMARY_BLUE};
+    }}
+
+    .lg-topbar-divider {{
+        width: 1px;
+        height: 20px;
+        background: {BORDER_DEFAULT};
+        margin: 0 0.25rem;
     }}
 
     .lg-breadcrumb {{
@@ -304,6 +459,30 @@ def inject_theme_css() -> None:
         flex-wrap: wrap;
         align-items: center;
         gap: 0.75rem;
+    }}
+
+    .lg-topbar-pill {{
+        display: inline-flex;
+        align-items: center;
+        gap: 0.45rem;
+        font-size: 0.78rem;
+        color: {TEXT_MUTED};
+        background: rgba(8, 14, 27, 0.6);
+        padding: 0.35rem 0.75rem;
+        border-radius: 8px;
+        border: 1px solid {BORDER_DEFAULT};
+        line-height: 1;
+    }}
+
+    @media (max-width: 768px) {{
+        .lg-topbar {{
+            padding: 0.65rem 1rem;
+            gap: 0.65rem;
+        }}
+        .lg-topbar-divider,
+        .lg-breadcrumb {{
+            display: none;
+        }}
     }}
 
     .lg-status-dot {{

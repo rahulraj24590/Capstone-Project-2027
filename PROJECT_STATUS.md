@@ -428,4 +428,15 @@
    - `data/` (`dataset_inventory.csv`, `README.md`, `processed/`, `landslide_guard.db`, `cache/offline_sync/`)
    - `models/` (`best_model.pkl`, `candidate_*.pkl`, `feature_columns.json`, `training_stats.json`, `registry.json`, `README.md`)
    - `reports/` (`final_audit.md`, `final_project_report.md`, `methodology.md`, `dataset_report.md`, `model_evaluation.md`, `limitations.md`, `viva_preparation.md`, `metrics.json`)
-   - `tests/` (`16` automated test suites totaling `237` tests)
+   - `tests/` (`16` automated test suites totaling `238` tests)
+
+---
+
+## Stage 11 — Navbar Alignment & Top Offset Resolution (Complete)
+- **Root Cause Identified:** Streamlit 1.58's native toolbar header (`xDe`) is rendered with `position: absolute; top: 0; height: 3.75rem (60px); z-index: 999990`. Overriding `.block-container` top padding down to `1.5rem` (24px) positioned the content 36px directly beneath the header. In addition, raw emoji font sizing and line-height ascenders caused brand logo text to overflow vertically.
+- **Definitive Fix Implemented:**
+  1. Set `.block-container` / `stMainBlockContainer` top padding to `6rem !important` (96px, with responsive 6.25rem on mobile), leaving a clean, unclipped 36px gap between the bottom border of the Streamlit Deploy toolbar and the top border of the LandslideGuard navbar card.
+  2. Rebuilt `.lg-landing-navbar` and `.lg-topbar` with dedicated flex structures: explicit container heights (`min-height: 72px` and `58px`), flexbox centering, contained 44x44px and 34x34px icon boxes with `overflow: hidden`, and comfortable line-heights (`1.3` for brand titles, `1.2` for subtitles) preventing any ascender clipping.
+  3. Added responsive rules for mobile/tablet (`max-width: 900px` and `max-width: 768px`) gracefully hiding dense links while keeping the brand logo and status indicators perfectly visible and aligned.
+- **Verification:** All 238 pytest tests passed in 35s. Streamlit headless `AppTest` passed across all 16 pages with 0 exceptions.
+

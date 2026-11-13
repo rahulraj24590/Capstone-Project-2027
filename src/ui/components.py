@@ -38,10 +38,11 @@ def render_topbar(
     topbar_html = f"""
     <div class="lg-topbar">
         <div class="lg-topbar-left">
-            <div style="font-size:1.25rem; font-weight:800; color:{TEXT_MAIN}; display:flex; align-items:center; gap:0.4rem;">
-                <span style="color:{PRIMARY_BLUE};">⛰️</span> LandslideGuard
+            <div class="lg-topbar-brand">
+                <div class="lg-topbar-icon">⛰️</div>
+                <div class="lg-topbar-title">Landslide<span>Guard</span></div>
             </div>
-            <div style="width:1px; height:18px; background:{BORDER_DEFAULT}; margin:0 0.3rem;"></div>
+            <div class="lg-topbar-divider"></div>
             <div class="lg-breadcrumb">
                 <span>Platform</span>
                 <span>/</span>
@@ -49,10 +50,10 @@ def render_topbar(
             </div>
         </div>
         <div class="lg-topbar-right">
-            <div style="display:inline-flex; align-items:center; gap:0.45rem; font-size:0.78rem; color:{TEXT_MUTED}; background:rgba(8,14,27,0.6); padding:0.25rem 0.65rem; border-radius:8px; border:1px solid {BORDER_DEFAULT};">
+            <div class="lg-topbar-pill">
                 <span style="color:{PRIMARY_BLUE};">📍</span> {selected_region}
             </div>
-            <div style="display:inline-flex; align-items:center; gap:0.45rem; font-size:0.78rem; color:{TEXT_MUTED}; background:rgba(8,14,27,0.6); padding:0.25rem 0.65rem; border-radius:8px; border:1px solid {BORDER_DEFAULT};">
+            <div class="lg-topbar-pill">
                 <div class="lg-status-dot" style="background:{status_color}; box-shadow:0 0 8px {status_color};"></div>
                 <span>{status_text}</span>
             </div>

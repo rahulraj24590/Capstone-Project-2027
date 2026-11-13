@@ -53,29 +53,25 @@ def render_landing_page(
     # ─────────────────────────────────────────────
     # SECTION A: Navigation Bar
     # ─────────────────────────────────────────────
-    st.markdown(f"""
-    <div style="display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:0.85rem; background:rgba(13,23,40,0.85); backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px); border:1px solid {BORDER_DEFAULT}; border-radius:16px; padding:0.85rem 1.75rem; margin-bottom:1.75rem; box-shadow:0 10px 30px rgba(0,0,0,0.35);">
-        <div style="display:flex; align-items:center; gap:0.6rem;">
-            <div style="font-size:1.6rem; line-height:1;">⛰️</div>
-            <div>
-                <div style="font-size:1.15rem; font-weight:800; letter-spacing:-0.02em; color:{TEXT_MAIN}; line-height:1.1;">
-                    Landslide<span style="color:{PRIMARY_BLUE};">Guard</span>
-                </div>
-                <div style="font-size:0.72rem; color:{TEXT_MUTED}; font-weight:600; letter-spacing:0.04em;">ENVIRONMENTAL SAAS</div>
+    st.markdown("""
+    <div class="lg-landing-navbar">
+        <div class="lg-navbar-brand">
+            <div class="lg-brand-icon">⛰️</div>
+            <div class="lg-brand-text">
+                <div class="lg-brand-title">Landslide<span>Guard</span></div>
+                <div class="lg-brand-subtitle">ENVIRONMENTAL SAAS</div>
             </div>
         </div>
-        <div style="display:flex; align-items:center; gap:1.6rem; font-size:0.86rem; font-weight:600; color:{TEXT_MUTED};">
-            <span style="color:{PRIMARY_BLUE};">Home</span>
+        <div class="lg-navbar-links">
+            <span class="lg-nav-active">Home</span>
             <span>Platform</span>
             <span>Live Monitoring</span>
             <span>India Risk Map</span>
             <span>AI Intelligence</span>
             <span>About</span>
         </div>
-        <div>
-            <span style="background:rgba(56,189,248,0.12); border:1px solid rgba(56,189,248,0.35); color:{PRIMARY_BLUE}; font-size:0.78rem; font-weight:700; padding:0.35rem 0.85rem; border-radius:8px;">
-                ENTERPRISE SAAS v1.0
-            </span>
+        <div class="lg-navbar-badge">
+            ENTERPRISE SAAS v1.0
         </div>
     </div>
     """, unsafe_allow_html=True)
