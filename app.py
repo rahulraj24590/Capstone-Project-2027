@@ -47,6 +47,17 @@ from src.database.db import initialize_database, get_table_counts
 from src.utils.logging_config import setup_logging, get_logger
 from src.utils.settings import get_setting
 
+from src.ui.theme import inject_theme_css, style_fig
+from src.ui.components import (
+    render_topbar,
+    render_risk_badge,
+    render_page_header as _ui_render_page_header,
+    experimental_banner as _ui_experimental_banner,
+    render_footer,
+)
+from src.ui.landing_page import render_landing_page
+from src.ui.overview_dashboard import render_overview_dashboard
+
 # ─────────────────────────────────────────────
 # Application bootstrap
 # ─────────────────────────────────────────────
@@ -66,215 +77,17 @@ APP_DESCRIPTION = get_setting("app", "description") or ""
 # ─────────────────────────────────────────────
 
 st.set_page_config(
-    page_title=f"{APP_NAME} — AI Landslide Risk System",
+    page_title=f"{APP_NAME} — Environmental Intelligence SaaS",
     page_icon="⛰️",
     layout="wide",
     initial_sidebar_state="expanded",
 )
 
 # ─────────────────────────────────────────────
-# Global CSS
+# Global Theme & CSS Engine (Premium Edition)
 # ─────────────────────────────────────────────
 
-st.markdown("""
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-
-html, body, [class*="css"] {
-    font-family: 'Inter', sans-serif;
-}
-
-.stApp {
-    background: radial-gradient(circle at top right, #162238 0%, #0b0f19 45%, #080b12 100%);
-}
-
-/* Main container breathing room */
-.block-container {
-    padding-top: 2rem;
-    padding-bottom: 2.5rem;
-}
-
-/* Sidebar styling & pill navigation */
-section[data-testid="stSidebar"] {
-    background: linear-gradient(180deg, #0f1523 0%, #131b2e 100%);
-    border-right: 1px solid #222d44;
-}
-
-section[data-testid="stSidebar"] [role="radiogroup"] {
-    gap: 0.35rem;
-}
-
-section[data-testid="stSidebar"] [role="radiogroup"] label {
-    background: rgba(255, 255, 255, 0.02);
-    border: 1px solid transparent;
-    border-radius: 10px;
-    padding: 0.55rem 0.85rem !important;
-    margin: 0 !important;
-    transition: all 0.18s ease;
-    cursor: pointer;
-}
-
-section[data-testid="stSidebar"] [role="radiogroup"] label:hover {
-    background: rgba(56, 189, 248, 0.08);
-    border-color: rgba(56, 189, 248, 0.25);
-}
-
-section[data-testid="stSidebar"] [role="radiogroup"] label[data-checked="true"],
-section[data-testid="stSidebar"] [role="radiogroup"] label:has(input:checked) {
-    background: linear-gradient(90deg, rgba(56, 189, 248, 0.18), rgba(56, 189, 248, 0.05));
-    border-color: rgba(56, 189, 248, 0.45);
-    box-shadow: inset 3px 0 0 #38bdf8;
-}
-
-/* KPI Metric cards */
-[data-testid="stMetric"],
-[data-testid="metric-container"] {
-    background: linear-gradient(145deg, #131b2e 0%, #172136 100%);
-    border: 1px solid #24314a;
-    border-radius: 12px;
-    padding: 0.9rem 1.1rem;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.22);
-    transition: border-color 0.2s ease, transform 0.2s ease;
-}
-
-[data-testid="stMetric"]:hover,
-[data-testid="metric-container"]:hover {
-    border-color: #38bdf866;
-}
-
-[data-testid="stMetricLabel"] {
-    color: #94a3b8 !important;
-    font-size: 0.82rem !important;
-    font-weight: 500 !important;
-}
-
-[data-testid="stMetricValue"] {
-    color: #f1f5f9 !important;
-    font-weight: 700 !important;
-}
-
-/* Header & Cards */
-.page-hero {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    align-items: center;
-    gap: 0.75rem;
-    margin-bottom: 0.75rem;
-}
-
-.section-header {
-    font-size: 1.75rem;
-    font-weight: 700;
-    letter-spacing: -0.02em;
-    color: #f1f5f9;
-    margin: 0;
-}
-
-.section-sub {
-    color: #94a3b8;
-    font-size: 0.92rem;
-    margin-top: 0.2rem;
-}
-
-.status-pills {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.45rem;
-}
-
-.pill {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.35rem;
-    padding: 0.28rem 0.7rem;
-    border-radius: 999px;
-    font-size: 0.76rem;
-    font-weight: 600;
-    border: 1px solid #2a3954;
-    background: #131b2e;
-    color: #cbd5e1;
-}
-
-.pill-amber {
-    background: rgba(245, 158, 11, 0.12);
-    border-color: rgba(245, 158, 11, 0.4);
-    color: #fbbf24;
-}
-
-.pill-blue {
-    background: rgba(56, 189, 248, 0.12);
-    border-color: rgba(56, 189, 248, 0.4);
-    color: #38bdf8;
-}
-
-.pill-green {
-    background: rgba(46, 204, 113, 0.12);
-    border-color: rgba(46, 204, 113, 0.4);
-    color: #4ade80;
-}
-
-.experimental-banner {
-    background: linear-gradient(90deg, rgba(245, 158, 11, 0.14) 0%, rgba(180, 83, 9, 0.08) 100%);
-    border: 1px solid rgba(245, 158, 11, 0.35);
-    border-left: 4px solid #f59e0b;
-    border-radius: 10px;
-    padding: 0.7rem 1rem;
-    margin: 0.4rem 0 1.2rem 0;
-    color: #fde68a;
-    font-size: 0.85rem;
-    line-height: 1.45;
-}
-
-.glass-card {
-    background: linear-gradient(145deg, #131b2e 0%, #162036 100%);
-    border: 1px solid #24314a;
-    border-radius: 12px;
-    padding: 1.1rem 1.25rem;
-    margin-bottom: 0.8rem;
-}
-
-.tier-strip {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 0.5rem;
-    margin: 0.6rem 0 0.9rem 0;
-}
-
-.tier-chip {
-    border-radius: 8px;
-    padding: 0.45rem 0.6rem;
-    text-align: center;
-    font-size: 0.78rem;
-    border: 1px solid #24314a;
-    background: #101727;
-    color: #94a3b8;
-}
-
-.sidebar-card {
-    background: rgba(15, 23, 42, 0.65);
-    border: 1px solid #24314a;
-    border-radius: 10px;
-    padding: 0.8rem 0.95rem;
-    font-size: 0.8rem;
-    color: #94a3b8;
-    line-height: 1.6;
-}
-
-/* Form & tab polish */
-[data-testid="stForm"] {
-    background: rgba(19, 27, 46, 0.65);
-    border: 1px solid #24314a;
-    border-radius: 14px;
-    padding: 1.25rem;
-}
-
-button[data-baseweb="tab"] {
-    font-weight: 600 !important;
-}
-</style>
-""", unsafe_allow_html=True)
-
+inject_theme_css()
 
 # ─────────────────────────────────────────────
 # Cached data & helper functions
@@ -319,45 +132,19 @@ def load_metrics() -> dict:
     return {}
 
 
-def _style_fig(fig: go.Figure, height: int = 300, showlegend: bool | None = None) -> go.Figure:
-    """Apply consistent dark-theme Plotly layout styling."""
-    layout_kwargs: dict = dict(
-        paper_bgcolor="rgba(0,0,0,0)",
-        plot_bgcolor="rgba(0,0,0,0)",
-        font_color="#cbd5e1",
-        height=height,
-        margin=dict(t=36, b=24, l=16, r=16),
-        legend=dict(bgcolor="rgba(0,0,0,0)"),
-    )
-    if showlegend is not None:
-        layout_kwargs["showlegend"] = showlegend
-    fig.update_layout(**layout_kwargs)
-    fig.update_xaxes(gridcolor="rgba(148,163,184,0.12)", zerolinecolor="rgba(148,163,184,0.2)")
-    fig.update_yaxes(gridcolor="rgba(148,163,184,0.12)", zerolinecolor="rgba(148,163,184,0.2)")
-    return fig
+def _style_fig(fig: go.Figure, height: int = 320, showlegend: bool | None = None) -> go.Figure:
+    """Format Plotly charts using the new SaaS theme engine."""
+    return style_fig(fig, height=height, showlegend=showlegend)
 
 
 def render_page_header(title: str, subtitle: str = "", pills: list[tuple[str, str]] | None = None) -> None:
     """Render a consistent hero header with status pills."""
-    pills_html = ""
-    if pills:
-        chips = "".join(f'<span class="pill {cls}">{label}</span>' for label, cls in pills)
-        pills_html = f'<div class="status-pills">{chips}</div>'
-    sub_html = f'<div class="section-sub">{subtitle}</div>' if subtitle else ""
-    st.markdown(
-        f'<div class="page-hero"><div><h1 class="section-header">{title}</h1>{sub_html}</div>{pills_html}</div>',
-        unsafe_allow_html=True,
-    )
+    _ui_render_page_header(title, subtitle=subtitle, pills=pills)
 
 
 def experimental_banner(extra: str = "") -> None:
-    msg = (
-        "⚠️ <b>EXPERIMENTAL SYSTEM</b> — All risk estimates are research outputs "
-        "from a capstone project. They have <b>NOT</b> been validated by any geological "
-        "or disaster-management authority and must <b>NOT</b> be used for real evacuation "
-        "or emergency decisions. " + extra
-    )
-    st.markdown(f'<div class="experimental-banner">{msg}</div>', unsafe_allow_html=True)
+    """Render the academic safety notice."""
+    _ui_experimental_banner(extra=extra)
 
 
 def _render_individual_shap_panel(
@@ -562,6 +349,7 @@ def _apply_scenario_preset() -> None:
 # ─────────────────────────────────────────────
 
 PAGES = [
+    "🌐 Home & Showcase",
     "🏠 Overview",
     "📡 Live Monitoring",
     "🔮 Risk Analysis",
@@ -581,11 +369,22 @@ PAGES = [
 
 with st.sidebar:
     st.markdown(f"""
-    <div style="text-align:center; padding: 0.6rem 0 0.8rem 0;">
-        <div style="font-size:2.4rem; line-height:1;">⛰️</div>
-        <div style="font-size:1.3rem; font-weight:700; color:#f1f5f9; margin-top:0.3rem;">{APP_NAME}</div>
-        <div style="margin-top:6px;">
-            <span class="pill pill-blue">v{APP_VERSION} · Research Prototype</span>
+    <div style="padding: 0.2rem 0.2rem 0.9rem 0.2rem;">
+        <div style="display:flex; align-items:center; gap:0.6rem;">
+            <div style="font-size:1.85rem; line-height:1;">⛰️</div>
+            <div>
+                <div style="font-size:1.2rem; font-weight:800; color:#F8FAFC; letter-spacing:-0.02em; line-height:1.1;">
+                    Landslide<span style="color:#38BDF8;">Guard</span>
+                </div>
+                <div style="font-size:0.68rem; font-weight:700; color:#94A3B8; letter-spacing:0.06em; text-transform:uppercase;">
+                    ENVIRONMENTAL SAAS v{APP_VERSION}
+                </div>
+            </div>
+        </div>
+        <div style="margin-top:0.65rem;">
+            <span style="display:inline-flex; align-items:center; gap:0.35rem; padding:0.22rem 0.65rem; border-radius:9999px; font-size:0.72rem; font-weight:600; background:rgba(56,189,248,0.12); border:1px solid rgba(56,189,248,0.35); color:#38BDF8;">
+                <span style="width:6px; height:6px; border-radius:50%; background:#22C55E; box-shadow:0 0 6px #22C55E;"></span> Telemetry Active
+            </span>
         </div>
     </div>
     """, unsafe_allow_html=True)
@@ -611,174 +410,57 @@ with st.sidebar:
         n_total = len(df_side)
         n_pos = int(df_side["landslide_occurred"].sum()) if "landslide_occurred" in df_side.columns else 0
         is_synth = bool(df_side.get("is_synthetic", pd.Series([0])).all()) if "is_synthetic" in df_side.columns else False
-        source_badge = '<span style="color:#fbbf24;">⚠️ Synthetic Dev Data</span>' if is_synth else '<span style="color:#4ade80;">✅ Authentic Data</span>'
-        alert_color = "#f87171" if active_alerts_n > 0 else "#4ade80"
+        source_badge = '<span style="color:#EAB308; font-weight:600;">⚠️ Synthetic Dev Data</span>' if is_synth else '<span style="color:#22C55E; font-weight:600;">✅ Authentic Data</span>'
+        alert_color = "#EF4444" if active_alerts_n > 0 else "#22C55E"
         st.markdown(f"""
-        <div class="sidebar-card">
-            <div style="font-weight:600; color:#e2e8f0; margin-bottom:0.35rem;">System Snapshot</div>
-            📦 Records: <b style="color:#f1f5f9;">{n_total:,}</b> ({n_pos:,} events)<br>
-            🤖 Model: <b style="color:#38bdf8;">{alg_side}</b><br>
-            🚨 Active Alerts: <b style="color:{alert_color};">{active_alerts_n}</b><br>
-            🗄️ Predictions Logged: <b style="color:#f1f5f9;">{counts_side.get("prediction_records", 0)}</b><br>
-            {source_badge}
+        <div class="sidebar-card" style="background:#131F32; border:1px solid rgba(148,163,184,0.15); border-radius:12px; padding:0.85rem 1rem;">
+            <div style="font-weight:700; color:#F8FAFC; margin-bottom:0.4rem; font-size:0.82rem; text-transform:uppercase; letter-spacing:0.04em;">System Status</div>
+            <div style="display:flex; justify-content:space-between; margin-bottom:0.25rem;">
+                <span style="color:#94A3B8;">Stations:</span>
+                <b style="color:#38BDF8;">{counts_side.get("locations", 6)}</b>
+            </div>
+            <div style="display:flex; justify-content:space-between; margin-bottom:0.25rem;">
+                <span style="color:#94A3B8;">Catalog:</span>
+                <b style="color:#F8FAFC;">{n_total:,}</b>
+            </div>
+            <div style="display:flex; justify-content:space-between; margin-bottom:0.25rem;">
+                <span style="color:#94A3B8;">AI Model:</span>
+                <b style="color:#38BDF8;">{alg_side}</b>
+            </div>
+            <div style="display:flex; justify-content:space-between; margin-bottom:0.4rem;">
+                <span style="color:#94A3B8;">Active Alerts:</span>
+                <b style="color:{alert_color};">{active_alerts_n}</b>
+            </div>
+            <div style="border-top:1px solid rgba(148,163,184,0.12); padding-top:0.4rem; font-size:0.75rem;">
+                {source_badge}
+            </div>
         </div>
         """, unsafe_allow_html=True)
 
     st.divider()
     st.markdown(
-        '<div style="font-size:0.72rem; color:#64748b; text-align:center;">B.Tech CSE Capstone Project<br>LandslideGuard · 2025–26</div>',
+        '<div style="font-size:0.72rem; color:#64748B; text-align:center;">B.Tech CSE Capstone Project<br>LandslideGuard · 2025–26</div>',
         unsafe_allow_html=True,
     )
 
 
 # ═══════════════════════════════════════════════════════════════
-# PAGE 1: OVERVIEW
+# PAGE: HOME & SHOWCASE (LANDING PAGE)
 # ═══════════════════════════════════════════════════════════════
 
-if page == "🏠 Overview":
+if page in ("🌐 Home & Showcase", "🌐 Landing Page"):
     df = load_dataset()
     model_info = load_model_info()
-    db_counts = get_table_counts()
-    alg = model_info.get("metadata", {}).get("algorithm", "N/A") if model_info else "N/A"
-    alg_label = alg.replace("_", " ").title() if alg != "N/A" else "Not Trained"
+    render_landing_page(df=df, model_info=model_info)
 
-    dataset_pill = (
-        ("📦 No Dataset Loaded", "pill")
-        if df is None or df.empty
-        else (
-            ("📦 Synthetic Dev Dataset", "pill")
-            if ("is_synthetic" in df.columns and bool(df["is_synthetic"].all()))
-            else ("✅ Authentic Dataset", "pill-green")
-        )
-    )
-    render_page_header(
-        "⛰️ LandslideGuard Dashboard",
-        APP_DESCRIPTION,
-        pills=[
-            ("⚠️ Experimental Prototype", "pill-amber"),
-            (f"🤖 {alg_label}", "pill-blue"),
-            dataset_pill,
-        ],
-    )
-    experimental_banner()
+# ═══════════════════════════════════════════════════════════════
+# PAGE 1: EXECUTIVE OVERVIEW DASHBOARD
+# ═══════════════════════════════════════════════════════════════
 
-    c1, c2, c3, c4, c5 = st.columns(5)
-    with c1:
-        n = len(df) if df is not None else 0
-        st.metric("📦 Total Records", f"{n:,}")
-    with c2:
-        n_pos = int(df["landslide_occurred"].sum()) if df is not None and "landslide_occurred" in df.columns else 0
-        pos_pct = f"{(n_pos / len(df) * 100):.1f}% rate" if df is not None and len(df) > 0 else None
-        st.metric("🔴 Landslide Events", f"{n_pos:,}", delta=pos_pct, delta_color="off")
-    with c3:
-        st.metric("🤖 Active Model", alg_label)
-    with c4:
-        meta = model_info.get("metadata", {}) if model_info else {}
-        tm = meta.get("test_metrics", {})
-        f1 = tm.get("f1", None)
-        st.metric("📈 Test F1 Score", f"{f1:.4f}" if f1 is not None else "N/A",
-                  help="Computed on synthetic development test split only")
-    with c5:
-        st.metric("🚨 Total DB Alerts", db_counts.get("alerts", 0),
-                  delta=f"{active_alerts_n} active", delta_color="off")
-
-    st.divider()
-
-    col_left, col_right = st.columns([1, 1.2])
-    with col_left:
-        st.markdown("### 📊 Observed Class Distribution")
-        if df is not None and "landslide_occurred" in df.columns:
-            cats = df["landslide_occurred"].map({0: "No Event", 1: "Landslide Event"})
-            cat_counts = cats.value_counts().reset_index()
-            cat_counts.columns = ["Outcome", "Count"]
-            color_map = {"No Event": "#2ecc71", "Landslide Event": "#e74c3c"}
-            fig = px.pie(
-                cat_counts, values="Count", names="Outcome",
-                color="Outcome", color_discrete_map=color_map, hole=0.52,
-            )
-            fig.update_traces(textposition="inside", textinfo="percent+label")
-            _style_fig(fig, height=320)
-            st.plotly_chart(fig, width="stretch")
-        else:
-            st.info("No processed dataset available (`data/processed/dataset.parquet`). Run `python scripts/prepare_data.py` to generate development data.")
-
-    with col_right:
-        st.markdown("### 🗺️ Geographic Coverage")
-        if df is not None and "latitude" in df.columns:
-            valid_df = df.dropna(subset=["latitude", "longitude"])
-            valid_df = valid_df[valid_df["latitude"].between(-90, 90) & valid_df["longitude"].between(-180, 180)]
-            if not valid_df.empty:
-                sample_df = valid_df.head(600).copy()
-                sample_df["Event"] = sample_df["landslide_occurred"].map({0: "No Event", 1: "Landslide"})
-                fig_map = px.scatter_map(
-                    sample_df, lat="latitude", lon="longitude",
-                    color="Event",
-                    color_discrete_map={"No Event": "#2ecc71", "Landslide": "#e74c3c"},
-                    hover_data=[c for c in ["slope_degrees", "rainfall_24h_mm", "elevation_m"] if c in sample_df.columns],
-                    center={"lat": 22.0, "lon": 83.0},
-                    zoom=3.4, height=320, map_style="carto-darkmatter", opacity=0.68,
-                )
-                fig_map.update_layout(
-                    paper_bgcolor="rgba(0,0,0,0)",
-                    margin=dict(t=8, b=8, l=8, r=8),
-                    legend=dict(bgcolor="rgba(19,27,46,0.75)", font=dict(color="#e2e8f0")),
-                )
-                st.plotly_chart(fig_map, width="stretch")
-            else:
-                st.info("No valid coordinate rows found in dataset.")
-        else:
-            st.info("Geographic preview unavailable until dataset is loaded (`python scripts/prepare_data.py`).")
-
-    st.divider()
-    st.markdown("### 🔬 Data Quality & Feature Summary")
-    if df is not None:
-        q1, q2, q3, q4 = st.columns(4)
-        with q1:
-            missing_pct = df.isnull().mean().mean() * 100
-            st.metric("Missing Cells", f"{missing_pct:.1f}%")
-        with q2:
-            st.metric("Duplicate Rows", int(df.duplicated().sum()))
-        with q3:
-            is_synthetic = ("is_synthetic" in df.columns and df["is_synthetic"].all())
-            st.metric("Provenance", "⚠️ Synthetic" if is_synthetic else "🟢 Authentic")
-        with q4:
-            if "event_date" in df.columns:
-                try:
-                    dates = pd.to_datetime(df["event_date"], errors="coerce")
-                    yr_range = f"{int(dates.dt.year.min())}–{int(dates.dt.year.max())}"
-                    st.metric("Temporal Span", yr_range)
-                except Exception:
-                    st.metric("Temporal Span", "N/A")
-    else:
-        st.info("Data quality summary unavailable — no processed dataset loaded.")
-
-    st.divider()
-    st.markdown("### 🤖 Active Model Card")
-    if model_info:
-        meta = model_info.get("metadata", {})
-        tm = meta.get("test_metrics", {})
-        mi1, mi2, mi3, mi4 = st.columns(4)
-        with mi1:
-            st.metric("Algorithm", meta.get("algorithm", "N/A").replace("_", " ").title())
-            st.caption(f"Saved: {model_info.get('saved_at', 'N/A')[:19].replace('T', ' ')} UTC")
-        with mi2:
-            train_s = meta.get("train_samples")
-            test_s = meta.get("test_samples")
-            st.metric("Features", len(meta.get("feature_columns", [])))
-            st.caption(f"Train: {train_s:,} · Test: {test_s:,}" if isinstance(train_s, int) and isinstance(test_s, int) else "")
-        with mi3:
-            prec = tm.get("precision")
-            rec = tm.get("recall")
-            st.metric("Test Precision", f"{prec:.4f}" if prec is not None else "N/A")
-            st.caption(f"Test Recall: {rec:.4f}" if rec is not None else "")
-        with mi4:
-            pr_auc = tm.get("pr_auc")
-            roc_auc = tm.get("roc_auc")
-            st.metric("Test PR-AUC", f"{pr_auc:.4f}" if pr_auc is not None else "N/A")
-            st.caption(f"Test ROC-AUC: {roc_auc:.4f}" if roc_auc is not None else "")
-        st.caption("⚠️ Metrics above are computed on **synthetic development data** and do NOT reflect real-world predictive performance.")
-    else:
-        st.info("No trained model found. Run: `python -m src.models.train`")
+elif page in ("🏠 Overview", "🏠 Executive Overview"):
+    df = load_dataset()
+    model_info = load_model_info()
+    render_overview_dashboard(df=df, model_info=model_info)
 
 
 # ═══════════════════════════════════════════════════════════════
@@ -786,6 +468,7 @@ if page == "🏠 Overview":
 # ═══════════════════════════════════════════════════════════════
 
 elif page == "📡 Live Monitoring":
+    render_topbar("Live Monitoring", selected_region="Multi-Station Telemetry")
     from src.monitoring import get_live_monitor
     from src.geospatial.maps import build_landslide_map
     from streamlit_folium import st_folium
@@ -1375,6 +1058,7 @@ elif page == "📡 Live Monitoring":
 # ═══════════════════════════════════════════════════════════════
 
 elif page == "🗺️ Geospatial Map":
+    render_topbar("India Risk Map", selected_region="Geospatial Intelligence")
     from src.geospatial.maps import build_landslide_map
     from src.geospatial.spatial_analysis import (
         apply_geographic_filters,
@@ -2240,6 +1924,7 @@ elif page == "🗺️ Geospatial Map":
 # ═══════════════════════════════════════════════════════════════
 
 elif page == "🌦️ Weather Analysis":
+    render_topbar("Weather Intelligence", selected_region="Open-Meteo High-Resolution")
     from src.data_providers.weather_provider import WeatherProvider, parse_api_timestamp
     from src.database.models import get_locations
     from src.monitoring.rainfall_analysis import (
@@ -2981,6 +2666,7 @@ elif page == "🌦️ Weather Analysis":
 # ═══════════════════════════════════════════════════════════════
 
 elif page == "🔮 Risk Analysis":
+    render_topbar("AI Risk Prediction", selected_region="Dynamic Inference Engine")
     render_page_header(
         "🔮 Dynamic Risk Prediction",
         "Estimate point landslide risk from terrain and rainfall features with SHAP feature attribution.",
@@ -3223,6 +2909,7 @@ elif page == "🔮 Risk Analysis":
 # ═══════════════════════════════════════════════════════════════
 
 elif page == "📊 Historical Events":
+    render_topbar("Historical Landslides", selected_region="NASA GLC Event Catalog")
     render_page_header(
         "📊 Historical & Pattern Analysis",
         "Explore temporal trends, environmental distributions, and correlations across the dataset.",
@@ -3346,6 +3033,7 @@ elif page == "📊 Historical Events":
 # ═══════════════════════════════════════════════════════════════
 
 elif page == "🤖 Model Performance":
+    render_topbar("Model Performance", selected_region="Model Benchmark Registry")
     metrics = load_metrics()
     model_info = load_model_info()
     best_alg = (model_info.get("metadata", {}).get("algorithm", "") or "").replace("_", " ").title() or "Unknown"
@@ -3603,6 +3291,7 @@ elif page == "🤖 Model Performance":
 # ═══════════════════════════════════════════════════════════════
 
 elif page == "🧠 AI Explainability":
+    render_topbar("Explainable AI", selected_region="SHAP Game-Theoretic Decomposition")
     from src.models.explainability import (
         EXPLAINABILITY_CONCEPTS,
         NON_CAUSAL_DISCLAIMER,
@@ -3980,6 +3669,7 @@ elif page == "🧠 AI Explainability":
 # ═══════════════════════════════════════════════════════════════
 
 elif page == "🚨 Alert Management":
+    render_topbar("Alert Center", selected_region="Lifecycle Governance")
     from src.alerts.alert_manager import get_alert_manager
     from src.database.models import get_locations
     manager = get_alert_manager()
@@ -4265,6 +3955,7 @@ elif page == "🚨 Alert Management":
 # ═════════════════════════════════════════════════════════════════════════════
 
 elif page == "🇮🇳 India Regional Monitoring":
+    render_topbar("State & District Analysis", selected_region="National Index (36 States / 735 Districts)")
     from src.data_providers.india_boundaries import IndiaBoundaryProvider
     from src.geospatial.maps import build_india_regional_map
     from src.monitoring.india_monitor import IndiaRegionalMonitor
@@ -4651,6 +4342,7 @@ elif page == "🇮🇳 India Regional Monitoring":
 # ═══════════════════════════════════════════════════════════════
 
 elif page == "💬 AI Assistant & Vision":
+    render_topbar("AI Assistant & Vision", selected_region="Retrieval-Augmented Intelligence")
     render_page_header(
         "💬 LandslideGuard AI Assistant & Computer Vision",
         "Context-aware question answering, experimental slope image analysis, and verified multilingual disaster safety guidance.",
@@ -4984,6 +4676,7 @@ elif page == "💬 AI Assistant & Vision":
 # ═══════════════════════════════════════════════════════════════
 
 elif page == "🛡️ Disaster Response & Community":
+    render_topbar("Disaster Response & Community", selected_region="Emergency Facilities & Routing")
     render_page_header(
         "🛡️ Disaster Response & Community Intelligence",
         "Nearby emergency facilities, OSRM road routing, crowd-sourced hazard incident reporting, historical event replay, and automated PDF reports.",
@@ -5376,6 +5069,7 @@ elif page == "🛡️ Disaster Response & Community":
 # ═══════════════════════════════════════════════════════════════
 
 elif page == "🔐 Admin Panel":
+    render_topbar("Administration", selected_region="Security & RBAC Control")
     render_page_header(
         "🔐 Administrative Control & Governance",
         "Role-Based Access Control (RBAC) administration: review community incident reports, manage monitoring stations, govern experimental alerts, and inspect system audit logs.",
@@ -5563,6 +5257,7 @@ elif page == "🔐 Admin Panel":
 # ═══════════════════════════════════════════════════════════════
 
 elif page == "🗄️ Data Management":
+    render_topbar("Data Management & Inventory", selected_region="SQLite & Datasets")
     render_page_header(
         "🗄️ Data Management & Inventory",
         "Inspect SQLite storage tables, authentic vs. synthetic dataset provenance, regional caches, and CSV exports.",
@@ -5684,6 +5379,7 @@ elif page == "⚙️ Settings":
     import os
     from src.utils.settings import load_settings
 
+    render_topbar("System Configuration & Settings", selected_region="Runtime & Providers")
     render_page_header(
         "⚙️ System Configuration & Provider Settings",
         "Read-only inspector for active YAML runtime thresholds, alert cooldowns, API endpoints, and credential presence.",
@@ -5756,3 +5452,10 @@ elif page == "⚙️ Settings":
     ]
     st.dataframe(pd.DataFrame(env_rows), width="stretch", hide_index=True)
     st.caption("Edit `config/settings.yaml` or `.env` locally and restart the application to apply configuration changes.")
+
+# ─────────────────────────────────────────────
+# Global Footer for Subpages
+# ─────────────────────────────────────────────
+if page not in ("🌐 Home & Showcase", "🌐 Landing Page", "🏠 Overview", "🏠 Executive Overview"):
+    render_footer()
+
