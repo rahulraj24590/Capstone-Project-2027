@@ -3,7 +3,7 @@
     {
       "name": "best_model",
       "path": "models\\best_model.pkl",
-      "saved_at": "2026-11-10T16:16:18.329590+00:00",
+      "saved_at": "2026-11-13T11:11:40.250471+00:00",
       "metadata": {
         "algorithm": "logistic_regression",
         "feature_columns": [
@@ -15,6 +15,8 @@
           "vegetation_index",
           "soil_moisture"
         ],
+        "dataset_source": "Synthetic Development Dataset (data/processed/dataset.parquet, is_synthetic=1)",
+        "validation_approach": "Chronological temporal train/validation/test split (68% / 12% / 20%); selected by validation PR-AUC",
         "train_samples": 1360,
         "test_samples": 400,
         "test_metrics": {
@@ -1448,8 +1450,13 @@
     {
       "name": "candidate_logistic_regression",
       "path": "models\\candidate_logistic_regression.pkl",
-      "saved_at": "2026-11-10T16:16:18.364854+00:00",
+      "saved_at": "2026-11-13T11:11:40.284611+00:00",
       "metadata": {
+        "algorithm": "logistic_regression",
+        "dataset_source": "Synthetic Development Dataset (data/processed/dataset.parquet, is_synthetic=1)",
+        "validation_approach": "Chronological temporal train/validation/test split (68% / 12% / 20%); selected by validation PR-AUC",
+        "train_samples": 1360,
+        "test_samples": 400,
         "validation_metrics": {
           "split": "validation",
           "threshold": 0.5,
@@ -2017,8 +2024,13 @@
     {
       "name": "candidate_random_forest",
       "path": "models\\candidate_random_forest.pkl",
-      "saved_at": "2026-11-10T16:16:18.476362+00:00",
+      "saved_at": "2026-11-13T11:11:40.422015+00:00",
       "metadata": {
+        "algorithm": "random_forest",
+        "dataset_source": "Synthetic Development Dataset (data/processed/dataset.parquet, is_synthetic=1)",
+        "validation_approach": "Chronological temporal train/validation/test split (68% / 12% / 20%); selected by validation PR-AUC",
+        "train_samples": 1360,
+        "test_samples": 400,
         "validation_metrics": {
           "split": "validation",
           "threshold": 0.5,
@@ -2027,7 +2039,7 @@
           "f1": 0.9606299212598425,
           "roc_auc": 0.9989009982599139,
           "pr_auc": 0.9967387857897292,
-          "brier_score": 0.020268751383366777,
+          "brier_score": 0.020268751383366774,
           "roc_curve": {
             "fpr": [
               0.0,
@@ -2488,8 +2500,13 @@
     {
       "name": "candidate_gradient_boosting",
       "path": "models\\candidate_gradient_boosting.pkl",
-      "saved_at": "2026-11-10T16:16:18.505035+00:00",
+      "saved_at": "2026-11-13T11:11:40.470036+00:00",
       "metadata": {
+        "algorithm": "gradient_boosting",
+        "dataset_source": "Synthetic Development Dataset (data/processed/dataset.parquet, is_synthetic=1)",
+        "validation_approach": "Chronological temporal train/validation/test split (68% / 12% / 20%); selected by validation PR-AUC",
+        "train_samples": 1360,
+        "test_samples": 400,
         "validation_metrics": {
           "split": "validation",
           "threshold": 0.5,
@@ -2981,8 +2998,13 @@
     {
       "name": "candidate_xgboost",
       "path": "models\\candidate_xgboost.pkl",
-      "saved_at": "2026-11-10T16:16:18.531435+00:00",
+      "saved_at": "2026-11-13T11:11:40.513613+00:00",
       "metadata": {
+        "algorithm": "xgboost",
+        "dataset_source": "Synthetic Development Dataset (data/processed/dataset.parquet, is_synthetic=1)",
+        "validation_approach": "Chronological temporal train/validation/test split (68% / 12% / 20%); selected by validation PR-AUC",
+        "train_samples": 1360,
+        "test_samples": 400,
         "validation_metrics": {
           "split": "validation",
           "threshold": 0.5,

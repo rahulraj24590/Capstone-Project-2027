@@ -72,6 +72,14 @@ alerts:
   max_active_alerts: 50
   # Audit log retention (days)
   audit_retention_days: 30
+  # External notifications (STRICTLY DISABLED BY DEFAULT)
+  notifications:
+    email:
+      enabled: false
+      provider: "smtp_disabled"
+    sms:
+      enabled: false
+      provider: "sms_disabled"
 
 # ─────────────────────────────────────────────
 # MODEL
@@ -145,6 +153,38 @@ providers:
     cache_ttl_seconds: 86400  # 24 hours (terrain does not change)
     attribution: "Elevation data from SRTM via Open-Elevation API"
 
+  imd:
+    name: "India Meteorological Department (IMD)"
+    base_url: "https://api.imd.gov.in/api/v1"
+    docs_url: "https://api.imd.gov.in/public/api_reference.html"
+    timeout_seconds: 12
+    max_retries: 2
+    retry_backoff_factor: 2
+    cache_ttl_seconds: 1800
+    attribution: "Official meteorological data from India Meteorological Department (api.imd.gov.in)"
+
+  sachet:
+    name: "NDMA SACHET CAP Portal"
+    base_url: "https://sachet.ndma.gov.in/cap_public_website"
+    portal_url: "https://sachet.ndma.gov.in/"
+    timeout_seconds: 12
+    max_retries: 2
+    retry_backoff_factor: 2
+    cache_ttl_seconds: 600
+    attribution: "Common Alerting Protocol (CAP) feed via NDMA SACHET (sachet.ndma.gov.in)"
+
+# ─────────────────────────────────────────────
+# INDIA STATE / DISTRICT MONITORING DEFAULTS
+# ─────────────────────────────────────────────
+india_monitoring:
+  country: "India"
+  default_state: "Kerala"
+  default_district: "Idukki"
+  boundaries_dir: "data/india_boundaries"
+  geoboundaries_adm1_url: "https://www.geoboundaries.org/api/current/gbOpen/IND/ADM1/"
+  geoboundaries_adm2_url: "https://www.geoboundaries.org/api/current/gbOpen/IND/ADM2/"
+  boundary_attribution: "geoBoundaries IND ADM1 (DataMeet/ECI, CC BY 2.5 IN) & ADM2 (Pathways/lgdirectory.gov.in, ODbL 1.0)"
+
 # ─────────────────────────────────────────────
 # MAP
 # ─────────────────────────────────────────────
@@ -182,3 +222,65 @@ synthetic_data:
   lon_range: [72.0, 97.0]
   random_seed: 42
   positive_fraction: 0.25   # fraction of samples that are landslide events
+
+# ─────────────────────────────────────────────
+# ENVIRONMENTAL ANALYTICS, FORECASTING & DRIFT (Phase 6)
+# ─────────────────────────────────────────────
+analytics:
+  anomaly:
+    # Minimum historical archive days required before classifying any anomaly
+    min_baseline_days: 30
+    # Minimum historical days before enabling unsupervised Isolation Forest detection
+    min_isolation_forest_days: 60
+    z_above_normal: 1.0
+    z_unusual: 2.0
+    z_extreme: 3.0
+    rolling_window_days: 7
+    # Documented IMD daily "Very Heavy Rainfall" threshold (115.6 mm/24h);
+    # used strictly as secondary reference alongside empirical archive quantiles.
+    imd_very_heavy_mm: 115.6
+    isolation_forest_contamination: 0.05
+
+  trends:
+    min_weekly_valid_days: 5
+    min_monthly_valid_days: 20
+    min_seasonal_valid_days: 15
+    rolling_window_days: 7
+
+  forecast_risk:
+    horizons_hours: [24, 48, 72]
+    step_hours: 6
+    # Sensitivity band applied symmetrically to forecast rainfall uncertainty
+    rainfall_sensitivity_pct: 0.25
+
+  drift:
+    min_feature_samples: 20
+    min_outcome_samples: 10
+    psi_moderate_threshold: 0.10
+    psi_high_threshold: 0.25
+    ks_p_threshold: 0.01
+    missing_rate_delta_threshold: 0.10
+    perf_drop_threshold: 0.10
+
+# ─────────────────────────────────────────────
+# GEOSPATIAL & SATELLITE INTELLIGENCE (Phase 7)
+# ─────────────────────────────────────────────
+geospatial:
+  hotspot:
+    method: "both"            # "dbscan", "kde", or "both"
+    eps_km: 25.0              # DBSCAN spatial radius in kilometres (haversine)
+    min_samples: 3            # DBSCAN core point requirement
+    kde_grid_size: 30         # KDE regular grid evaluation density
+    kde_bandwidth: "scott"
+    percentile_hotspot: 90.0  # Threshold for elevated density hotspot delineation
+  satellite:
+    sensor: "Sentinel-2 MSI"
+    red_band_name: "B04"
+    nir_band_name: "B08"
+    default_resolution_m: 10.0
+    ndvi_loss_threshold: -0.15 # dNDVI cutoff for significant loss flagging
+    cloud_scl_classes: [3, 8, 9, 10] # SCL classes masked as clouds/shadows
+  terrain:
+    default_pixel_size_m: 30.0
+    twi_min_slope_rad: 0.001
+

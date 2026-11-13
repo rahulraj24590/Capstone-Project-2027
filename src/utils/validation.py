@@ -107,6 +107,7 @@ FEATURE_RANGES: dict[str, tuple[float, float]] = {
     "elevation_m": (-500.0, 9000.0),
     "rainfall_1h_mm": (0.0, 500.0),
     "rainfall_24h_mm": (0.0, 2000.0),
+    "rainfall_48h_mm": (0.0, 3500.0),
     "rainfall_72h_mm": (0.0, 5000.0),
     "vegetation_index": (-1.0, 1.0),
     "soil_moisture": (0.0, 1.0),

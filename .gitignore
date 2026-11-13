@@ -60,6 +60,7 @@ data/raw/*.geojson
 data/raw/*.tif
 data/raw/*.nc
 data/raw/*.zip
+data/india_boundaries/*.geojson
 data/processed/*.parquet
 data/processed/*.csv
 

@@ -343,6 +343,19 @@ def run_training(data_path: str | Path | None = None) -> dict:
     all_metrics[f"{best_name}_test"] = test_metrics
     logger.info("Test set evaluation: %s", test_metrics)
 
+    is_syn = bool("is_synthetic" in df.columns and df["is_synthetic"].eq(1).all())
+    dataset_source = (
+        f"Synthetic Development Dataset ({Path(data_path).as_posix()}, is_synthetic=1)"
+        if is_syn
+        else f"{Path(data_path).as_posix()}"
+    )
+    split_mode = (
+        "Chronological temporal train/validation/test split (68% / 12% / 20%)"
+        if "event_date" in df.columns and df["event_date"].notna().sum() > 20
+        else "Stratified random train/validation/test split (68% / 12% / 20%, seed=42)"
+    )
+    validation_approach = f"{split_mode}; selected by validation PR-AUC"
+
     # Save models
     save_model(
         best_pipeline,
@@ -350,6 +363,8 @@ def run_training(data_path: str | Path | None = None) -> dict:
         metadata={
             "algorithm": best_name,
             "feature_columns": feature_cols,
+            "dataset_source": dataset_source,
+            "validation_approach": validation_approach,
             "train_samples": int(len(X_train)),
             "test_samples": int(len(X_test)),
             "test_metrics": test_metrics,
@@ -362,6 +377,11 @@ def run_training(data_path: str | Path | None = None) -> dict:
     for name, pipeline in trained_candidates.items():
         try:
             save_model(pipeline, f"candidate_{name}", metadata={
+                "algorithm": name,
+                "dataset_source": dataset_source,
+                "validation_approach": validation_approach,
+                "train_samples": int(len(X_train)),
+                "test_samples": int(len(X_test)),
                 "validation_metrics": all_metrics.get(name, {}),
                 "feature_columns": feature_cols,
             }, overwrite=True)

@@ -12,6 +12,12 @@ from pathlib import Path
 
 import yaml
 
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    pass
+
 _CONFIG_PATH = Path(__file__).parents[2] / "config" / "settings.yaml"
 
 
