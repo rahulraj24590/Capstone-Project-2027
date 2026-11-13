@@ -54,7 +54,7 @@ def render_landing_page(
     # SECTION A: Navigation Bar
     # ─────────────────────────────────────────────
     st.markdown(f"""
-    <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(13,23,40,0.85); backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px); border:1px solid {BORDER_DEFAULT}; border-radius:16px; padding:0.85rem 1.75rem; margin-bottom:1.75rem; box-shadow:0 10px 30px rgba(0,0,0,0.35);">
+    <div style="display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:0.85rem; background:rgba(13,23,40,0.85); backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px); border:1px solid {BORDER_DEFAULT}; border-radius:16px; padding:0.85rem 1.75rem; margin-bottom:1.75rem; box-shadow:0 10px 30px rgba(0,0,0,0.35);">
         <div style="display:flex; align-items:center; gap:0.6rem;">
             <div style="font-size:1.6rem; line-height:1;">⛰️</div>
             <div>
