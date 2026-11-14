@@ -101,10 +101,10 @@ def inject_theme_css() -> None:
     header[data-testid="stHeader"],
     [data-testid="stHeader"],
     .stAppHeader {{
-        background: rgba(8, 14, 27, 0.95) !important;
+        background: rgba(6, 12, 25, 0.95) !important;
         backdrop-filter: blur(16px) !important;
         -webkit-backdrop-filter: blur(16px) !important;
-        border-bottom: 1px solid {BORDER_DEFAULT} !important;
+        border-bottom: 1px solid #263A59 !important;
         height: 3.75rem !important;
         min-height: 3.75rem !important;
         z-index: 99999 !important;
@@ -142,33 +142,37 @@ def inject_theme_css() -> None:
         overflow-y: auto !important;
         overflow-x: hidden !important;
         position: relative !important;
+        margin-top: 0 !important;
     }}
 
     /* ─────────────────────────────────────────────
        4. Sections 3, 4, 5: Main Content Block Container
-       Generous 6rem (96px) top padding ensures that custom
+       Generous 6.5rem (104px) top padding guarantees that custom
        navigation bars, logos, brand titles, and breadcrumbs
-       start safely 36px below the 60px Streamlit header.
+       start safely 44px below the 60px Streamlit header.
        ───────────────────────────────────────────── */
     div[data-testid="stMainBlockContainer"],
+    section[data-testid="stMain"] > div:first-child,
     .stMainBlockContainer,
     .block-container {{
-        padding-top: 6rem !important;
+        padding-top: 6.5rem !important;
         padding-bottom: 3.5rem !important;
-        padding-left: 2.25rem !important;
-        padding-right: 2.25rem !important;
-        max-width: 1460px !important;
+        padding-left: 2rem !important;
+        padding-right: 2rem !important;
+        max-width: 1480px !important;
         width: 100% !important;
         margin-left: auto !important;
         margin-right: auto !important;
+        margin-top: 0 !important;
         box-sizing: border-box !important;
     }}
 
     @media (max-width: 1024px) {{
         div[data-testid="stMainBlockContainer"],
+        section[data-testid="stMain"] > div:first-child,
         .stMainBlockContainer,
         .block-container {{
-            padding-top: 6rem !important;
+            padding-top: 6.5rem !important;
             padding-left: 1.5rem !important;
             padding-right: 1.5rem !important;
         }}
@@ -176,9 +180,10 @@ def inject_theme_css() -> None:
 
     @media (max-width: 640px) {{
         div[data-testid="stMainBlockContainer"],
+        section[data-testid="stMain"] > div:first-child,
         .stMainBlockContainer,
         .block-container {{
-            padding-top: 6.25rem !important;
+            padding-top: 6.5rem !important;
             padding-left: 1rem !important;
             padding-right: 1rem !important;
         }}
@@ -188,8 +193,8 @@ def inject_theme_css() -> None:
        5. Sidebar Alignment
        ───────────────────────────────────────────── */
     section[data-testid="stSidebar"] {{
-        background: {BG_SIDEBAR} !important;
-        border-right: 1px solid {BORDER_DEFAULT} !important;
+        background: #091326 !important;
+        border-right: 1px solid #263A59 !important;
         height: 100vh !important;
         height: 100dvh !important;
     }}
@@ -202,12 +207,12 @@ def inject_theme_css() -> None:
 
     [data-testid="stSidebarUserContent"] {{
         padding-top: 0.25rem !important;
-        padding-left: 1rem !important;
-        padding-right: 1rem !important;
+        padding-left: 0.85rem !important;
+        padding-right: 0.85rem !important;
     }}
 
     section[data-testid="stSidebar"] [role="radiogroup"] {{
-        gap: 0.35rem;
+        gap: 0.3rem;
     }}
 
     section[data-testid="stSidebar"] [role="radiogroup"] label {{
@@ -216,7 +221,7 @@ def inject_theme_css() -> None:
         border-radius: 10px !important;
         padding: 0.55rem 0.85rem !important;
         margin: 0 !important;
-        transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1) !important;
+        transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
         cursor: pointer !important;
     }}
 
@@ -228,13 +233,20 @@ def inject_theme_css() -> None:
 
     section[data-testid="stSidebar"] [role="radiogroup"] label[data-checked="true"],
     section[data-testid="stSidebar"] [role="radiogroup"] label:has(input:checked) {{
-        background: linear-gradient(90deg, rgba(56, 189, 248, 0.18) 0%, rgba(37, 99, 235, 0.08) 100%) !important;
-        border-color: rgba(56, 189, 248, 0.45) !important;
-        box-shadow: inset 3px 0 0 {PRIMARY_BLUE}, 0 2px 10px rgba(56, 189, 248, 0.12) !important;
+        background: linear-gradient(135deg, #2563EB 0%, #7C3AED 100%) !important;
+        border-color: rgba(139, 92, 246, 0.6) !important;
+        box-shadow: 0 4px 14px rgba(37, 99, 235, 0.38) !important;
+        border-radius: 10px !important;
+    }}
+
+    section[data-testid="stSidebar"] [role="radiogroup"] label[data-checked="true"] span,
+    section[data-testid="stSidebar"] [role="radiogroup"] label:has(input:checked) span {{
+        color: #FFFFFF !important;
+        font-weight: 700 !important;
     }}
 
     section[data-testid="stSidebar"] [role="radiogroup"] label span {{
-        color: {TEXT_MAIN} !important;
+        color: #F8FAFC !important;
         font-weight: 500 !important;
         font-size: 0.88rem !important;
     }}
@@ -454,39 +466,42 @@ def inject_theme_css() -> None:
     }}
 
     .lg-collapse-btn {{
-        background: rgba(6, 12, 25, 0.6);
-        border: 1px solid {BORDER_DEFAULT};
+        background: rgba(6, 12, 25, 0.7);
+        border: 1px solid #263A59;
         border-radius: 8px;
-        color: {TEXT_MUTED};
-        padding: 0.3rem 0.55rem;
-        font-size: 0.9rem;
+        color: #A8B6CC;
+        padding: 0.25rem 0.5rem;
+        font-size: 0.78rem;
+        font-weight: 800;
         cursor: pointer;
         display: flex;
         align-items: center;
         justify-content: center;
+        line-height: 1;
+        letter-spacing: -0.05em;
     }}
 
     .lg-topbar-center {{
         display: flex;
         align-items: center;
-        gap: 1.4rem;
+        gap: 1.35rem;
         font-size: 0.86rem;
         font-weight: 600;
-        color: {TEXT_MUTED};
+        color: #A8B6CC;
     }}
 
     .lg-topbar-navitem {{
-        color: {TEXT_MUTED};
+        color: #A8B6CC;
         cursor: pointer;
-        transition: color 0.18s ease;
+        transition: all 0.18s ease;
         display: flex;
         align-items: center;
-        gap: 0.25rem;
+        gap: 0.35rem;
     }}
 
     .lg-topbar-navitem:hover,
     .lg-topbar-navitem.active {{
-        color: {PRIMARY_BLUE};
+        color: #38BDF8;
         font-weight: 700;
     }}
 
@@ -499,14 +514,14 @@ def inject_theme_css() -> None:
     .lg-topbar-search {{
         display: inline-flex;
         align-items: center;
-        gap: 0.45rem;
-        font-size: 0.78rem;
-        color: {TEXT_MUTED};
-        background: rgba(6, 12, 25, 0.7);
-        padding: 0.35rem 0.85rem;
-        border-radius: 8px;
-        border: 1px solid {BORDER_DEFAULT};
-        min-width: 170px;
+        gap: 0.55rem;
+        font-size: 0.82rem;
+        color: #A8B6CC;
+        background: #060C19;
+        padding: 0.38rem 0.95rem;
+        border-radius: 9999px;
+        border: 1px solid #263A59;
+        min-width: 190px;
     }}
 
     .lg-topbar-action-icon {{
@@ -514,40 +529,38 @@ def inject_theme_css() -> None:
         width: 34px;
         height: 34px;
         border-radius: 8px;
-        background: rgba(6, 12, 25, 0.6);
-        border: 1px solid {BORDER_DEFAULT};
+        background: rgba(6, 12, 25, 0.7);
+        border: 1px solid #263A59;
         display: flex;
         align-items: center;
         justify-content: center;
         font-size: 0.95rem;
-        color: {TEXT_MAIN};
+        color: #F8FAFC;
         cursor: pointer;
     }}
 
-    .lg-badge-unread {{
+    .lg-badge-unread-dot {{
         position: absolute;
-        top: -4px;
-        right: -4px;
-        background: {RISK_CRITICAL};
-        color: #ffffff;
-        font-size: 0.65rem;
-        font-weight: 800;
-        border-radius: 9999px;
-        padding: 0.1rem 0.35rem;
-        line-height: 1;
-        box-shadow: 0 0 6px {RISK_CRITICAL};
+        top: 6px;
+        right: 6px;
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: #EF4444;
+        box-shadow: 0 0 6px #EF4444;
     }}
 
     .lg-user-profile {{
-        width: 34px;
-        height: 34px;
+        width: 32px;
+        height: 32px;
         border-radius: 50%;
-        background: linear-gradient(135deg, {PRIMARY_BLUE} 0%, {GRADIENT_VIOLET} 100%);
+        background: #8B5CF6;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 0.95rem;
-        color: #ffffff;
+        font-size: 0.82rem;
+        font-weight: 800;
+        color: #FFFFFF;
         border: 1px solid rgba(255, 255, 255, 0.25);
     }}
 
@@ -959,13 +972,59 @@ def inject_theme_css() -> None:
         display: inline-flex;
         align-items: center;
         gap: 0.5rem;
-        padding: 0.3rem 0.75rem;
+    }}
+
+    .lg-map-btn {{
+        background: rgba(6, 12, 25, 0.75);
+        border: 1px solid #263A59;
         border-radius: 8px;
-        background: rgba(6, 12, 25, 0.6);
-        border: 1px solid {BORDER_DEFAULT};
-        font-size: 0.75rem;
-        color: {CYAN};
+        color: #A8B6CC;
+        padding: 0.35rem 0.75rem;
+        font-size: 0.78rem;
         font-weight: 600;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        transition: all 0.2s ease;
+    }}
+
+    .lg-map-btn:hover {{
+        background: #152641;
+        color: #F8FAFC;
+        border-color: #38BDF8;
+    }}
+
+    .lg-map-zoom-pill {{
+        position: absolute;
+        top: 70px;
+        left: 28px;
+        z-index: 999;
+        background: rgba(6, 12, 25, 0.9);
+        border: 1px solid #263A59;
+        border-radius: 8px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.45);
+    }}
+
+    .lg-map-zoom-btn {{
+        width: 30px;
+        height: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #F8FAFC;
+        font-size: 0.95rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: background 0.15s ease;
+    }}
+
+    .lg-map-zoom-btn:hover {{
+        background: #152641;
+        color: #38BDF8;
     }}
 
     .lg-risk-legend-floating {{

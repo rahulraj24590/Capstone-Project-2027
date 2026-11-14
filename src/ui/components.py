@@ -31,40 +31,53 @@ def render_topbar(
     selected_region: str = "National Subcontinent (India)",
     is_live_sync: bool = True,
 ) -> None:
-    """Render the top horizontal SaaS navigation bar strictly matching Section 3."""
+    """Render the top horizontal SaaS navigation bar strictly matching the primary design reference."""
     topbar_html = f"""
     <div class="lg-topbar">
         <div class="lg-topbar-left">
             <div class="lg-topbar-brand">
-                <div class="lg-topbar-icon">⛰️</div>
+                <div class="lg-topbar-icon" title="LandslideGuard Core">⛰️</div>
                 <div class="lg-topbar-text">
                     <div class="lg-topbar-title">Landslide<span>Guard</span></div>
                     <div class="lg-topbar-sub">ENVIRONMENTAL SAAS</div>
                 </div>
             </div>
-            <div class="lg-collapse-btn" title="Toggle Sidebar">☰</div>
+            <div class="lg-collapse-btn" title="Toggle Sidebar">&lt;&lt;</div>
         </div>
         <div class="lg-topbar-center">
-            <span class="lg-topbar-navitem {'active' if 'Home' in current_page else ''}">Home</span>
-            <span class="lg-topbar-navitem">Platform ▾</span>
-            <span class="lg-topbar-navitem {'active' if 'Live' in current_page else ''}">Live Monitoring</span>
-            <span class="lg-topbar-navitem {'active' if 'Map' in current_page else ''}">India Risk Map</span>
-            <span class="lg-topbar-navitem {'active' if 'AI' in current_page or 'Model' in current_page else ''}">AI Intelligence</span>
-            <span class="lg-topbar-navitem">About</span>
+            <span class="lg-topbar-navitem {'active' if 'Overview' in current_page or 'Home' in current_page else ''}">
+                <span style="font-size:0.95rem;">🏠</span> Home
+            </span>
+            <span class="lg-topbar-navitem">
+                <span style="font-size:0.95rem;">🗂️</span> Platform <span style="font-size:0.65rem; opacity:0.8;">▼</span>
+            </span>
+            <span class="lg-topbar-navitem {'active' if 'Live' in current_page else ''}">
+                <span style="font-size:0.95rem;">📡</span> Live Monitoring
+            </span>
+            <span class="lg-topbar-navitem {'active' if 'Map' in current_page or 'Geospatial' in current_page else ''}">
+                <span style="font-size:0.95rem;">🗺️</span> India Risk Map
+            </span>
+            <span class="lg-topbar-navitem {'active' if 'AI' in current_page or 'Risk' in current_page or 'Model' in current_page else ''}">
+                <span style="font-size:0.95rem;">🤖</span> AI Intelligence
+            </span>
+            <span class="lg-topbar-navitem">
+                <span style="font-size:0.95rem;">ℹ️</span> About
+            </span>
         </div>
         <div class="lg-topbar-right">
             <div class="lg-topbar-search">
-                <span style="color:{PRIMARY_BLUE};">🔍</span> <span>Search location...</span>
+                <span style="color:#38BDF8; font-size:0.88rem;">🔍</span>
+                <span>Search location...</span>
             </div>
             <div class="lg-topbar-action-icon" title="Notifications">
-                <span>🔔</span>
-                <span class="lg-badge-unread">3</span>
+                <span style="font-size:0.95rem;">🔔</span>
+                <span class="lg-badge-unread-dot"></span>
             </div>
-            <div class="lg-topbar-action-icon" title="Toggle Theme">
-                <span>🌙</span>
+            <div class="lg-topbar-action-icon" title="Toggle Light/Dark Theme">
+                <span style="font-size:0.95rem;">☀️</span>
             </div>
-            <div class="lg-user-profile" title="Administrator Profile">
-                <span>👤</span>
+            <div class="lg-user-profile" title="Administrator Profile (Shubham Kumar)">
+                <span>SK</span>
             </div>
         </div>
     </div>
@@ -75,37 +88,59 @@ def render_topbar(
 def make_sparkline_svg(
     points: list[float],
     stroke_color: str = "#2196F3",
-    height: int = 24,
-    width: int = 120,
+    height: int = 28,
+    width: int = 130,
 ) -> str:
-    """Generate responsive inline SVG sparkline curve with subtle gradient fill."""
+    """Generate responsive inline SVG sparkline with smooth cubic bezier curve and gradient fill."""
     if not points or len(points) < 2:
         return ""
     min_y = min(points)
     max_y = max(points)
     span = (max_y - min_y) if (max_y - min_y) > 0 else 1.0
-    pad = 3
-    coords = []
-    dx = width / (len(points) - 1)
+    pad_y = 4
+    pad_x = 2
+    usable_h = height - 2 * pad_y
+    usable_w = width - 2 * pad_x
+
+    # Compute pixel coords
+    pts: list[tuple[float, float]] = []
+    dx = usable_w / (len(points) - 1)
     for i, p in enumerate(points):
-        x = i * dx
-        y = height - pad - ((p - min_y) / span) * (height - 2 * pad)
-        coords.append(f"{x:.1f},{y:.1f}")
-    polyline_pts = " ".join(coords)
-    first_x, first_y = coords[0].split(",")
-    last_x, last_y = coords[-1].split(",")
-    area_path = f"M {first_x},{height} L {first_x},{first_y} " + " ".join([f"L {c}" for c in coords[1:]]) + f" L {last_x},{height} Z"
-    grad_id = f"spark_grad_{abs(hash(polyline_pts)) % 100000}"
+        x = pad_x + i * dx
+        y = height - pad_y - ((p - min_y) / span) * usable_h
+        pts.append((x, y))
+
+    # Build smooth cubic bezier curve
+    if len(pts) == 2:
+        path_d = f"M {pts[0][0]:.1f},{pts[0][1]:.1f} L {pts[1][0]:.1f},{pts[1][1]:.1f}"
+    else:
+        path_d = f"M {pts[0][0]:.1f},{pts[0][1]:.1f}"
+        for i in range(len(pts) - 1):
+            p0 = pts[i - 1] if i > 0 else pts[i]
+            p1 = pts[i]
+            p2 = pts[i + 1]
+            p3 = pts[i + 2] if i + 2 < len(pts) else p2
+
+            # Control points
+            cp1x = p1[0] + (p2[0] - p0[0]) / 6.0
+            cp1y = p1[1] + (p2[1] - p0[1]) / 6.0
+            cp2x = p2[0] - (p3[0] - p1[0]) / 6.0
+            cp2y = p2[1] - (p3[1] - p1[1]) / 6.0
+            path_d += f" C {cp1x:.1f},{cp1y:.1f} {cp2x:.1f},{cp2y:.1f} {p2[0]:.1f},{p2[1]:.1f}"
+
+    area_d = f"{path_d} L {pts[-1][0]:.1f},{height} L {pts[0][0]:.1f},{height} Z"
+    grad_id = f"spark_grad_{abs(hash(str(pts) + stroke_color)) % 100000}"
+
     return f"""
     <svg width="100%" height="{height}" viewBox="0 0 {width} {height}" preserveAspectRatio="none" style="overflow:visible; display:block;">
         <defs>
             <linearGradient id="{grad_id}" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stop-color="{stroke_color}" stop-opacity="0.32" />
+                <stop offset="0%" stop-color="{stroke_color}" stop-opacity="0.38" />
                 <stop offset="100%" stop-color="{stroke_color}" stop-opacity="0.0" />
             </linearGradient>
         </defs>
-        <path d="{area_path}" fill="url(#{grad_id})" />
-        <polyline fill="none" stroke="{stroke_color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" points="{polyline_pts}" />
+        <path d="{area_d}" fill="url(#{grad_id})" />
+        <path d="{path_d}" fill="none" stroke="{stroke_color}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
     </svg>
     """
 
