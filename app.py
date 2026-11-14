@@ -50,7 +50,6 @@ from src.utils.settings import get_setting
 from src.ui.theme import inject_theme_css, style_fig
 from src.ui.components import (
     render_topbar,
-    render_risk_badge,
     render_page_header as _ui_render_page_header,
     experimental_banner as _ui_experimental_banner,
     render_footer,
