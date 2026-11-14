@@ -15,42 +15,47 @@ import plotly.graph_objects as go
 import streamlit as st
 
 # ─────────────────────────────────────────────
-# 1. Design Tokens
+# 1. Design Tokens (Premium Dark Alpine Intelligence)
 # ─────────────────────────────────────────────
 
 # Backgrounds
-BG_DARK = "#080E1B"
-BG_SECONDARY = "#101A2B"
-BG_SIDEBAR = "#101A2B"
-BG_CARD = "#152238"
-BG_CARD_HOVER = "#1B2A40"
+BG_DARK = "#060C19"
+BG_SECONDARY = "#0A1427"
+BG_SIDEBAR = "#091326"
+BG_NAV = "#0A1427"
+BG_CARD = "#101E34"
+BG_CARD_ELEVATED = "#152641"
+BG_CARD_HOVER = "#152641"
 
-# Primary & Gradients
-PRIMARY_BLUE = "#38BDF8"
-GRADIENT_BLUE = "#2563EB"
-GRADIENT_VIOLET = "#7C3AED"
-CYAN = "#22D3EE"
+# Primary & Accents
+PRIMARY_BLUE = "#2196F3"
+GRADIENT_BLUE = "#2196F3"
+GRADIENT_VIOLET = "#8B5CF6"
+CYAN = "#38BDF8"
+VIOLET = "#8B5CF6"
+GREEN = "#22C55E"
 
 # Typography Colors
 TEXT_MAIN = "#F8FAFC"
-TEXT_MUTED = "#94A3B8"
+TEXT_MUTED = "#A8B6CC"
 TEXT_DIM = "#64748B"
 
 # Borders & Accents
-BORDER_DEFAULT = "rgba(148, 163, 184, 0.16)"
-BORDER_GLOW = "rgba(56, 189, 248, 0.35)"
-BORDER_FOCUS = "rgba(56, 189, 248, 0.65)"
+BORDER_DEFAULT = "#263A59"
+BORDER_GLOW = "rgba(33, 150, 243, 0.4)"
+BORDER_FOCUS = "#2196F3"
 
 # Risk Indicator Colors
 RISK_LOW = "#22C55E"
-RISK_MODERATE = "#EAB308"
+RISK_MODERATE = "#FACC15"
 RISK_HIGH = "#F97316"
 RISK_CRITICAL = "#EF4444"
 RISK_UNAVAILABLE = "#64748B"
 
-# High-resolution mountain photography assets for the two-image hero
+# High-resolution mountain photography assets for the two-image hero and headers
 HERO_IMG_LEFT = "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1600&q=80"
 HERO_IMG_RIGHT = "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1600&q=80"
+WEATHER_BG_RAIN = "https://images.unsplash.com/photo-1515694346937-94d85e41e6f0?auto=format&fit=crop&w=800&q=80"
 
 
 # ─────────────────────────────────────────────
@@ -367,31 +372,30 @@ def inject_theme_css() -> None:
     }}
 
     /* ─────────────────────────────────────────────
-       7. Top Navigation Bar (Internal Pages)
+       7. Top Navigation Bar (Section 3 Match)
        ───────────────────────────────────────────── */
     .lg-topbar {{
-        min-height: 58px;
+        min-height: 60px;
         box-sizing: border-box;
         display: flex;
         flex-wrap: wrap;
         align-items: center;
         justify-content: space-between;
-        gap: 0.85rem;
-        background: rgba(21, 34, 56, 0.85);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
+        gap: 1rem;
+        background: {BG_NAV};
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
         border: 1px solid {BORDER_DEFAULT};
         border-radius: 14px;
-        padding: 0.75rem 1.25rem;
+        padding: 0.65rem 1.4rem;
         margin-top: 0;
         margin-bottom: 1.5rem;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
         position: relative;
     }}
 
     .lg-topbar-left {{
         display: flex;
-        flex-wrap: wrap;
         align-items: center;
         gap: 0.85rem;
     }}
@@ -403,21 +407,27 @@ def inject_theme_css() -> None:
     }}
 
     .lg-topbar-icon {{
-        width: 34px;
-        height: 34px;
-        min-width: 34px;
-        min-height: 34px;
-        border-radius: 8px;
-        background: rgba(56, 189, 248, 0.12);
-        border: 1px solid rgba(56, 189, 248, 0.3);
+        width: 36px;
+        height: 36px;
+        min-width: 36px;
+        min-height: 36px;
+        border-radius: 10px;
+        background: rgba(33, 150, 243, 0.12);
+        border: 1px solid rgba(33, 150, 243, 0.3);
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 1.2rem;
+        font-size: 1.25rem;
         line-height: 1;
         flex-shrink: 0;
         box-sizing: border-box;
         overflow: hidden;
+    }}
+
+    .lg-topbar-text {{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
     }}
 
     .lg-topbar-title {{
@@ -433,45 +443,118 @@ def inject_theme_css() -> None:
         color: {PRIMARY_BLUE};
     }}
 
-    .lg-topbar-divider {{
-        width: 1px;
-        height: 20px;
-        background: {BORDER_DEFAULT};
-        margin: 0 0.25rem;
+    .lg-topbar-sub {{
+        font-size: 0.68rem;
+        font-weight: 700;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        color: {TEXT_MUTED};
+        line-height: 1.1;
+        margin-top: 2px;
     }}
 
-    .lg-breadcrumb {{
+    .lg-collapse-btn {{
+        background: rgba(6, 12, 25, 0.6);
+        border: 1px solid {BORDER_DEFAULT};
+        border-radius: 8px;
+        color: {TEXT_MUTED};
+        padding: 0.3rem 0.55rem;
+        font-size: 0.9rem;
+        cursor: pointer;
         display: flex;
-        flex-wrap: wrap;
         align-items: center;
-        gap: 0.5rem;
-        font-size: 0.82rem;
+        justify-content: center;
+    }}
+
+    .lg-topbar-center {{
+        display: flex;
+        align-items: center;
+        gap: 1.4rem;
+        font-size: 0.86rem;
+        font-weight: 600;
         color: {TEXT_MUTED};
     }}
 
-    .lg-breadcrumb-active {{
+    .lg-topbar-navitem {{
+        color: {TEXT_MUTED};
+        cursor: pointer;
+        transition: color 0.18s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+    }}
+
+    .lg-topbar-navitem:hover,
+    .lg-topbar-navitem.active {{
         color: {PRIMARY_BLUE};
-        font-weight: 600;
+        font-weight: 700;
     }}
 
     .lg-topbar-right {{
         display: flex;
-        flex-wrap: wrap;
         align-items: center;
-        gap: 0.75rem;
+        gap: 0.85rem;
     }}
 
-    .lg-topbar-pill {{
+    .lg-topbar-search {{
         display: inline-flex;
         align-items: center;
         gap: 0.45rem;
         font-size: 0.78rem;
         color: {TEXT_MUTED};
-        background: rgba(8, 14, 27, 0.6);
-        padding: 0.35rem 0.75rem;
+        background: rgba(6, 12, 25, 0.7);
+        padding: 0.35rem 0.85rem;
         border-radius: 8px;
         border: 1px solid {BORDER_DEFAULT};
+        min-width: 170px;
+    }}
+
+    .lg-topbar-action-icon {{
+        position: relative;
+        width: 34px;
+        height: 34px;
+        border-radius: 8px;
+        background: rgba(6, 12, 25, 0.6);
+        border: 1px solid {BORDER_DEFAULT};
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.95rem;
+        color: {TEXT_MAIN};
+        cursor: pointer;
+    }}
+
+    .lg-badge-unread {{
+        position: absolute;
+        top: -4px;
+        right: -4px;
+        background: {RISK_CRITICAL};
+        color: #ffffff;
+        font-size: 0.65rem;
+        font-weight: 800;
+        border-radius: 9999px;
+        padding: 0.1rem 0.35rem;
         line-height: 1;
+        box-shadow: 0 0 6px {RISK_CRITICAL};
+    }}
+
+    .lg-user-profile {{
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, {PRIMARY_BLUE} 0%, {GRADIENT_VIOLET} 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.95rem;
+        color: #ffffff;
+        border: 1px solid rgba(255, 255, 255, 0.25);
+    }}
+
+    @media (max-width: 1100px) {{
+        .lg-topbar-center {{
+            display: none;
+        }}
     }}
 
     @media (max-width: 768px) {{
@@ -479,8 +562,7 @@ def inject_theme_css() -> None:
             padding: 0.65rem 1rem;
             gap: 0.65rem;
         }}
-        .lg-topbar-divider,
-        .lg-breadcrumb {{
+        .lg-topbar-search {{
             display: none;
         }}
     }}
@@ -498,6 +580,452 @@ def inject_theme_css() -> None:
         0% {{ opacity: 0.6; transform: scale(0.95); }}
         50% {{ opacity: 1; transform: scale(1.1); }}
         100% {{ opacity: 0.6; transform: scale(0.95); }}
+    }}
+
+    /* ─────────────────────────────────────────────
+       Mission Control Header Component (Section 5)
+       ───────────────────────────────────────────── */
+    .lg-mission-header {{
+        position: relative;
+        border-radius: 16px;
+        padding: 1.6rem 2rem;
+        margin-bottom: 1.5rem;
+        background: linear-gradient(135deg, rgba(10, 20, 39, 0.88) 0%, rgba(6, 12, 25, 0.94) 100%),
+                    url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1600&q=80');
+        background-size: cover;
+        background-position: center 30%;
+        border: 1px solid {BORDER_DEFAULT};
+        box-shadow: 0 12px 35px rgba(0, 0, 0, 0.45);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1.5rem;
+        flex-wrap: wrap;
+    }}
+
+    .lg-mission-header-left {{
+        max-width: 650px;
+    }}
+
+    .lg-mission-eyebrow {{
+        display: inline-flex;
+        align-items: center;
+        gap: 0.45rem;
+        font-size: 0.72rem;
+        font-weight: 800;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: {CYAN};
+        margin-bottom: 0.4rem;
+    }}
+
+    .lg-mission-title {{
+        font-size: 1.85rem;
+        font-weight: 800;
+        letter-spacing: -0.025em;
+        color: {TEXT_MAIN};
+        margin: 0 0 0.4rem 0;
+        line-height: 1.2;
+    }}
+
+    .lg-gradient-text {{
+        background: linear-gradient(135deg, {PRIMARY_BLUE} 0%, {GRADIENT_VIOLET} 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }}
+
+    .lg-mission-subtitle {{
+        font-size: 0.88rem;
+        color: {TEXT_MUTED};
+        line-height: 1.5;
+        margin: 0;
+    }}
+
+    .lg-mission-header-right {{
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 0.6rem;
+    }}
+
+    .lg-telemetry-badge {{
+        display: inline-flex;
+        align-items: center;
+        gap: 0.45rem;
+        padding: 0.35rem 0.8rem;
+        border-radius: 9999px;
+        font-size: 0.78rem;
+        font-weight: 700;
+        background: rgba(34, 197, 94, 0.12);
+        border: 1px solid rgba(34, 197, 94, 0.35);
+        color: {RISK_LOW};
+    }}
+
+    .lg-sync-time {{
+        font-size: 0.76rem;
+        color: {TEXT_MUTED};
+        font-weight: 500;
+    }}
+
+    /* ─────────────────────────────────────────────
+       5 KPI Cards Component (Section 6)
+       ───────────────────────────────────────────── */
+    .lg-kpi-card {{
+        background: linear-gradient(145deg, {BG_CARD} 0%, {BG_CARD_ELEVATED} 100%);
+        border: 1px solid {BORDER_DEFAULT};
+        border-radius: 14px;
+        padding: 1.1rem 1.2rem;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+        transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        height: 100%;
+        min-height: 155px;
+    }}
+
+    .lg-kpi-card:hover {{
+        transform: translateY(-2px);
+        border-color: {BORDER_GLOW};
+        box-shadow: 0 12px 28px rgba(0, 0, 0, 0.4), 0 0 16px rgba(33, 150, 243, 0.12);
+    }}
+
+    .lg-kpi-top {{
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 0.5rem;
+    }}
+
+    .lg-kpi-icon-box {{
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.15rem;
+    }}
+
+    .lg-kpi-title {{
+        font-size: 0.74rem;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: {TEXT_MUTED};
+    }}
+
+    .lg-kpi-val {{
+        font-size: 1.85rem;
+        font-weight: 800;
+        letter-spacing: -0.02em;
+        color: {TEXT_MAIN};
+        line-height: 1.1;
+        margin-bottom: 0.35rem;
+    }}
+
+    .lg-kpi-trend {{
+        font-size: 0.72rem;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.3rem;
+    }}
+
+    .lg-kpi-sparkline {{
+        margin-top: 0.5rem;
+        width: 100%;
+        height: 24px;
+        overflow: hidden;
+    }}
+
+    /* ─────────────────────────────────────────────
+       Weather Card (Section 9)
+       ───────────────────────────────────────────── */
+    .lg-weather-card {{
+        background: linear-gradient(180deg, rgba(16, 30, 52, 0.88) 0%, rgba(10, 20, 39, 0.95) 100%),
+                    url('https://images.unsplash.com/photo-1515694346937-94d85e41e6f0?auto=format&fit=crop&w=800&q=80');
+        background-size: cover;
+        background-position: center;
+        border: 1px solid {BORDER_DEFAULT};
+        border-radius: 16px;
+        padding: 1.25rem 1.35rem;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.35);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        margin-bottom: 1rem;
+    }}
+
+    .lg-weather-header {{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.75rem;
+    }}
+
+    .lg-weather-title {{
+        font-size: 1.05rem;
+        font-weight: 800;
+        color: {TEXT_MAIN};
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }}
+
+    .lg-weather-location {{
+        font-size: 0.82rem;
+        color: {CYAN};
+        font-weight: 600;
+    }}
+
+    .lg-weather-temp {{
+        font-size: 2.2rem;
+        font-weight: 800;
+        color: {TEXT_MAIN};
+        line-height: 1;
+        margin: 0.4rem 0 0.85rem 0;
+        display: flex;
+        align-items: baseline;
+        gap: 0.5rem;
+    }}
+
+    .lg-weather-condition {{
+        font-size: 0.88rem;
+        color: {TEXT_MUTED};
+        font-weight: 600;
+    }}
+
+    .lg-weather-grid {{
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.5rem;
+        margin-bottom: 0.85rem;
+    }}
+
+    .lg-weather-stat-item {{
+        background: rgba(6, 12, 25, 0.6);
+        border: 1px solid {BORDER_DEFAULT};
+        border-radius: 8px;
+        padding: 0.45rem 0.65rem;
+    }}
+
+    .lg-weather-stat-label {{
+        font-size: 0.70rem;
+        color: {TEXT_MUTED};
+        margin-bottom: 0.15rem;
+    }}
+
+    .lg-weather-stat-val {{
+        font-size: 0.85rem;
+        font-weight: 700;
+        color: {TEXT_MAIN};
+    }}
+
+    .lg-weather-forecast {{
+        background: rgba(33, 150, 243, 0.08);
+        border: 1px solid rgba(33, 150, 243, 0.25);
+        border-radius: 8px;
+        padding: 0.5rem 0.75rem;
+        font-size: 0.78rem;
+        color: {CYAN};
+        line-height: 1.4;
+        margin-bottom: 0.75rem;
+    }}
+
+    .lg-weather-footer {{
+        font-size: 0.72rem;
+        color: {TEXT_DIM};
+        border-top: 1px solid rgba(38, 58, 89, 0.6);
+        padding-top: 0.6rem;
+    }}
+
+    /* ─────────────────────────────────────────────
+       Recent Alerts Card (Section 10)
+       ───────────────────────────────────────────── */
+    .lg-alerts-card {{
+        background: {BG_CARD};
+        border: 1px solid {BORDER_DEFAULT};
+        border-radius: 16px;
+        padding: 1.25rem 1.35rem;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.35);
+        margin-bottom: 1rem;
+    }}
+
+    .lg-alerts-header {{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.85rem;
+    }}
+
+    .lg-alerts-title {{
+        font-size: 1.05rem;
+        font-weight: 800;
+        color: {TEXT_MAIN};
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }}
+
+    .lg-alerts-viewall {{
+        font-size: 0.78rem;
+        color: {PRIMARY_BLUE};
+        font-weight: 700;
+        text-decoration: none;
+        cursor: pointer;
+    }}
+
+    .lg-alert-item {{
+        background: rgba(6, 12, 25, 0.55);
+        border: 1px solid {BORDER_DEFAULT};
+        border-radius: 10px;
+        padding: 0.65rem 0.85rem;
+        margin-bottom: 0.5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 0.75rem;
+        transition: background 0.18s ease;
+    }}
+
+    .lg-alert-item:hover {{
+        background: rgba(16, 30, 52, 0.8);
+        border-color: {BORDER_GLOW};
+    }}
+
+    .lg-alert-item-left {{
+        display: flex;
+        flex-direction: column;
+        gap: 0.2rem;
+    }}
+
+    .lg-alert-item-title {{
+        font-size: 0.82rem;
+        font-weight: 700;
+        color: {TEXT_MAIN};
+    }}
+
+    .lg-alert-item-desc {{
+        font-size: 0.74rem;
+        color: {TEXT_MUTED};
+        line-height: 1.3;
+    }}
+
+    .lg-alert-item-right {{
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 0.25rem;
+    }}
+
+    .lg-alert-item-time {{
+        font-size: 0.70rem;
+        color: {TEXT_DIM};
+    }}
+
+    /* ─────────────────────────────────────────────
+       Map Card & Floating Legend (Section 8)
+       ───────────────────────────────────────────── */
+    .lg-map-card {{
+        background: {BG_CARD};
+        border: 1px solid {BORDER_DEFAULT};
+        border-radius: 16px;
+        padding: 1.1rem 1.25rem;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.35);
+        position: relative;
+        margin-bottom: 1rem;
+    }}
+
+    .lg-map-card-header {{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.75rem;
+    }}
+
+    .lg-map-title {{
+        font-size: 1.1rem;
+        font-weight: 800;
+        color: {TEXT_MAIN};
+    }}
+
+    .lg-map-subtitle {{
+        font-size: 0.78rem;
+        color: {TEXT_MUTED};
+    }}
+
+    .lg-map-controls-pill {{
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.3rem 0.75rem;
+        border-radius: 8px;
+        background: rgba(6, 12, 25, 0.6);
+        border: 1px solid {BORDER_DEFAULT};
+        font-size: 0.75rem;
+        color: {CYAN};
+        font-weight: 600;
+    }}
+
+    .lg-risk-legend-floating {{
+        position: absolute;
+        bottom: 25px;
+        right: 25px;
+        background: rgba(6, 12, 25, 0.92);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid {BORDER_DEFAULT};
+        border-radius: 10px;
+        padding: 0.65rem 0.95rem;
+        z-index: 999;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.45);
+        display: flex;
+        flex-direction: column;
+        gap: 0.35rem;
+    }}
+
+    .lg-risk-legend-item {{
+        display: flex;
+        align-items: center;
+        gap: 0.45rem;
+        font-size: 0.74rem;
+        color: {TEXT_MAIN};
+        font-weight: 600;
+    }}
+
+    .lg-risk-legend-dot {{
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+    }}
+
+    /* ─────────────────────────────────────────────
+       Analytics Cards (Section 11)
+       ───────────────────────────────────────────── */
+    .lg-analytics-card {{
+        background: {BG_CARD};
+        border: 1px solid {BORDER_DEFAULT};
+        border-radius: 16px;
+        padding: 1.1rem 1.25rem;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }}
+
+    .lg-analytics-title {{
+        font-size: 0.95rem;
+        font-weight: 800;
+        color: {TEXT_MAIN};
+        margin-bottom: 0.2rem;
+    }}
+
+    .lg-analytics-sub {{
+        font-size: 0.76rem;
+        color: {TEXT_MUTED};
+        margin-bottom: 0.6rem;
     }}
 
     /* Card Containers */
@@ -1001,19 +1529,19 @@ def style_fig(fig: go.Figure, height: int = 320, showlegend: bool | None = None)
         font=dict(color=TEXT_MUTED, family="Plus Jakarta Sans, sans-serif", size=12),
         height=height,
         margin=dict(t=36, b=24, l=20, r=20),
-        legend=dict(bgcolor="rgba(19, 31, 50, 0.7)", font=dict(color=TEXT_MAIN)),
+        legend=dict(bgcolor="rgba(16, 30, 52, 0.8)", font=dict(color=TEXT_MAIN)),
     )
     if showlegend is not None:
         layout_kwargs["showlegend"] = showlegend
     fig.update_layout(**layout_kwargs)
     fig.update_xaxes(
-        gridcolor="rgba(148, 163, 184, 0.10)",
-        zerolinecolor="rgba(148, 163, 184, 0.18)",
+        gridcolor="rgba(38, 58, 89, 0.45)",
+        zerolinecolor="rgba(38, 58, 89, 0.65)",
         tickfont=dict(color=TEXT_MUTED),
     )
     fig.update_yaxes(
-        gridcolor="rgba(148, 163, 184, 0.10)",
-        zerolinecolor="rgba(148, 163, 184, 0.18)",
+        gridcolor="rgba(38, 58, 89, 0.45)",
+        zerolinecolor="rgba(38, 58, 89, 0.65)",
         tickfont=dict(color=TEXT_MUTED),
     )
     return fig

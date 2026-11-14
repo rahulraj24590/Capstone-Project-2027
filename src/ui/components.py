@@ -31,36 +31,83 @@ def render_topbar(
     selected_region: str = "National Subcontinent (India)",
     is_live_sync: bool = True,
 ) -> None:
-    """Render the top SaaS navigation and breadcrumb bar."""
-    status_text = "Telemetry Active · Verified State" if is_live_sync else "Offline Cache Mode"
-    status_color = RISK_LOW if is_live_sync else RISK_MODERATE
-
+    """Render the top horizontal SaaS navigation bar strictly matching Section 3."""
     topbar_html = f"""
     <div class="lg-topbar">
         <div class="lg-topbar-left">
             <div class="lg-topbar-brand">
                 <div class="lg-topbar-icon">⛰️</div>
-                <div class="lg-topbar-title">Landslide<span>Guard</span></div>
+                <div class="lg-topbar-text">
+                    <div class="lg-topbar-title">Landslide<span>Guard</span></div>
+                    <div class="lg-topbar-sub">ENVIRONMENTAL SAAS</div>
+                </div>
             </div>
-            <div class="lg-topbar-divider"></div>
-            <div class="lg-breadcrumb">
-                <span>Platform</span>
-                <span>/</span>
-                <span class="lg-breadcrumb-active">{current_page}</span>
-            </div>
+            <div class="lg-collapse-btn" title="Toggle Sidebar">☰</div>
+        </div>
+        <div class="lg-topbar-center">
+            <span class="lg-topbar-navitem {'active' if 'Home' in current_page else ''}">Home</span>
+            <span class="lg-topbar-navitem">Platform ▾</span>
+            <span class="lg-topbar-navitem {'active' if 'Live' in current_page else ''}">Live Monitoring</span>
+            <span class="lg-topbar-navitem {'active' if 'Map' in current_page else ''}">India Risk Map</span>
+            <span class="lg-topbar-navitem {'active' if 'AI' in current_page or 'Model' in current_page else ''}">AI Intelligence</span>
+            <span class="lg-topbar-navitem">About</span>
         </div>
         <div class="lg-topbar-right">
-            <div class="lg-topbar-pill">
-                <span style="color:{PRIMARY_BLUE};">📍</span> {selected_region}
+            <div class="lg-topbar-search">
+                <span style="color:{PRIMARY_BLUE};">🔍</span> <span>Search location...</span>
             </div>
-            <div class="lg-topbar-pill">
-                <div class="lg-status-dot" style="background:{status_color}; box-shadow:0 0 8px {status_color};"></div>
-                <span>{status_text}</span>
+            <div class="lg-topbar-action-icon" title="Notifications">
+                <span>🔔</span>
+                <span class="lg-badge-unread">3</span>
+            </div>
+            <div class="lg-topbar-action-icon" title="Toggle Theme">
+                <span>🌙</span>
+            </div>
+            <div class="lg-user-profile" title="Administrator Profile">
+                <span>👤</span>
             </div>
         </div>
     </div>
     """
     st.markdown(topbar_html, unsafe_allow_html=True)
+
+
+def make_sparkline_svg(
+    points: list[float],
+    stroke_color: str = "#2196F3",
+    height: int = 24,
+    width: int = 120,
+) -> str:
+    """Generate responsive inline SVG sparkline curve with subtle gradient fill."""
+    if not points or len(points) < 2:
+        return ""
+    min_y = min(points)
+    max_y = max(points)
+    span = (max_y - min_y) if (max_y - min_y) > 0 else 1.0
+    pad = 3
+    coords = []
+    dx = width / (len(points) - 1)
+    for i, p in enumerate(points):
+        x = i * dx
+        y = height - pad - ((p - min_y) / span) * (height - 2 * pad)
+        coords.append(f"{x:.1f},{y:.1f}")
+    polyline_pts = " ".join(coords)
+    first_x, first_y = coords[0].split(",")
+    last_x, last_y = coords[-1].split(",")
+    area_path = f"M {first_x},{height} L {first_x},{first_y} " + " ".join([f"L {c}" for c in coords[1:]]) + f" L {last_x},{height} Z"
+    grad_id = f"spark_grad_{abs(hash(polyline_pts)) % 100000}"
+    return f"""
+    <svg width="100%" height="{height}" viewBox="0 0 {width} {height}" preserveAspectRatio="none" style="overflow:visible; display:block;">
+        <defs>
+            <linearGradient id="{grad_id}" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="{stroke_color}" stop-opacity="0.32" />
+                <stop offset="100%" stop-color="{stroke_color}" stop-opacity="0.0" />
+            </linearGradient>
+        </defs>
+        <path d="{area_path}" fill="url(#{grad_id})" />
+        <polyline fill="none" stroke="{stroke_color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" points="{polyline_pts}" />
+    </svg>
+    """
 
 
 def render_risk_badge(risk_category: str | None) -> str:

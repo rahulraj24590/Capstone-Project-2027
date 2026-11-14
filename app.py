@@ -369,20 +369,22 @@ PAGES = [
 
 with st.sidebar:
     st.markdown(f"""
-    <div style="padding: 0.2rem 0.2rem 0.9rem 0.2rem;">
-        <div style="display:flex; align-items:center; gap:0.6rem;">
-            <div style="font-size:1.85rem; line-height:1;">⛰️</div>
+    <div style="padding: 0.2rem 0.2rem 0.75rem 0.2rem;">
+        <div style="display:flex; align-items:center; gap:0.65rem;">
+            <div style="width:38px; height:38px; border-radius:10px; background:rgba(33,150,243,0.12); border:1px solid rgba(33,150,243,0.3); display:flex; align-items:center; justify-content:center; font-size:1.4rem; line-height:1;">
+                ⛰️
+            </div>
             <div>
-                <div style="font-size:1.2rem; font-weight:800; color:#F8FAFC; letter-spacing:-0.02em; line-height:1.1;">
-                    Landslide<span style="color:#38BDF8;">Guard</span>
+                <div style="font-size:1.15rem; font-weight:800; color:#F8FAFC; letter-spacing:-0.02em; line-height:1.1;">
+                    Landslide<span style="color:#2196F3;">Guard</span>
                 </div>
-                <div style="font-size:0.68rem; font-weight:700; color:#94A3B8; letter-spacing:0.06em; text-transform:uppercase;">
+                <div style="font-size:0.68rem; font-weight:700; color:#A8B6CC; letter-spacing:0.06em; text-transform:uppercase;">
                     ENVIRONMENTAL SAAS v{APP_VERSION}
                 </div>
             </div>
         </div>
         <div style="margin-top:0.65rem;">
-            <span style="display:inline-flex; align-items:center; gap:0.35rem; padding:0.22rem 0.65rem; border-radius:9999px; font-size:0.72rem; font-weight:600; background:rgba(56,189,248,0.12); border:1px solid rgba(56,189,248,0.35); color:#38BDF8;">
+            <span style="display:inline-flex; align-items:center; gap:0.35rem; padding:0.22rem 0.65rem; border-radius:9999px; font-size:0.72rem; font-weight:700; background:rgba(34,197,94,0.12); border:1px solid rgba(34,197,94,0.35); color:#22C55E;">
                 <span style="width:6px; height:6px; border-radius:50%; background:#22C55E; box-shadow:0 0 6px #22C55E;"></span> Telemetry Active
             </span>
         </div>
@@ -410,36 +412,44 @@ with st.sidebar:
         n_total = len(df_side)
         n_pos = int(df_side["landslide_occurred"].sum()) if "landslide_occurred" in df_side.columns else 0
         is_synth = bool(df_side.get("is_synthetic", pd.Series([0])).all()) if "is_synthetic" in df_side.columns else False
-        source_badge = '<span style="color:#EAB308; font-weight:600;">⚠️ Synthetic Dev Data</span>' if is_synth else '<span style="color:#22C55E; font-weight:600;">✅ Authentic Data</span>'
+        source_badge = '<span style="color:#FACC15; font-weight:600;">⚠️ Synthetic Dev Data</span>' if is_synth else '<span style="color:#22C55E; font-weight:600;">✅ Authentic Data</span>'
         alert_color = "#EF4444" if active_alerts_n > 0 else "#22C55E"
         st.markdown(f"""
-        <div class="sidebar-card" style="background:#152238; border:1px solid rgba(148,163,184,0.16); border-radius:12px; padding:0.85rem 1rem; box-shadow: 0 4px 16px rgba(0,0,0,0.25);">
-            <div style="font-weight:700; color:#F8FAFC; margin-bottom:0.4rem; font-size:0.82rem; text-transform:uppercase; letter-spacing:0.04em;">System Status</div>
-            <div style="display:flex; justify-content:space-between; margin-bottom:0.25rem;">
-                <span style="color:#94A3B8;">Stations:</span>
-                <b style="color:#38BDF8;">{counts_side.get("locations", 6)}</b>
+        <div class="sidebar-card" style="background:#101E34; border:1px solid #263A59; border-radius:12px; padding:0.85rem 1rem; box-shadow: 0 4px 16px rgba(0,0,0,0.35);">
+            <div style="font-weight:800; color:#F8FAFC; margin-bottom:0.4rem; font-size:0.78rem; text-transform:uppercase; letter-spacing:0.05em; display:flex; justify-content:space-between; align-items:center;">
+                <span>System Status</span>
+                <span style="font-size:0.68rem; color:#2196F3;">● LIVE</span>
             </div>
             <div style="display:flex; justify-content:space-between; margin-bottom:0.25rem;">
-                <span style="color:#94A3B8;">Catalog:</span>
-                <b style="color:#F8FAFC;">{n_total:,}</b>
+                <span style="color:#A8B6CC; font-size:0.82rem;">Stations:</span>
+                <b style="color:#2196F3; font-size:0.84rem;">{counts_side.get("locations", 6)}</b>
             </div>
             <div style="display:flex; justify-content:space-between; margin-bottom:0.25rem;">
-                <span style="color:#94A3B8;">AI Model:</span>
-                <b style="color:#38BDF8;">{alg_side}</b>
+                <span style="color:#A8B6CC; font-size:0.82rem;">Catalog:</span>
+                <b style="color:#F8FAFC; font-size:0.84rem;">{n_total:,}</b>
+            </div>
+            <div style="display:flex; justify-content:space-between; margin-bottom:0.25rem;">
+                <span style="color:#A8B6CC; font-size:0.82rem;">AI Model:</span>
+                <b style="color:#38BDF8; font-size:0.84rem;">{alg_side}</b>
             </div>
             <div style="display:flex; justify-content:space-between; margin-bottom:0.4rem;">
-                <span style="color:#94A3B8;">Active Alerts:</span>
-                <b style="color:{alert_color};">{active_alerts_n}</b>
+                <span style="color:#A8B6CC; font-size:0.82rem;">Active Alerts:</span>
+                <b style="color:{alert_color}; font-size:0.84rem;">{active_alerts_n}</b>
             </div>
-            <div style="border-top:1px solid rgba(148,163,184,0.12); padding-top:0.4rem; font-size:0.75rem;">
+            <div style="border-top:1px solid #263A59; padding-top:0.4rem; font-size:0.74rem;">
                 {source_badge}
             </div>
+        </div>
+
+        <div style="background:linear-gradient(180deg, rgba(16,30,52,0.85) 0%, rgba(9,19,38,0.96) 100%), url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=400&q=80'); background-size:cover; background-position:center; border:1px solid #263A59; border-radius:12px; padding:0.85rem; margin-top:0.75rem; text-align:center;">
+            <div style="font-size:0.74rem; font-weight:800; color:#F8FAFC; letter-spacing:0.04em;">🏔️ ALPINE SENSING GRID</div>
+            <div style="font-size:0.68rem; color:#A8B6CC; margin-top:2px; line-height:1.3;">Western Ghats &amp; Himalayas Surveillance Network</div>
         </div>
         """, unsafe_allow_html=True)
 
     st.divider()
     st.markdown(
-        '<div style="font-size:0.72rem; color:#64748B; text-align:center;">B.Tech CSE Capstone Project<br>LandslideGuard · 2025–26</div>',
+        '<div style="font-size:0.70rem; color:#64748B; text-align:center;">B.Tech CSE Capstone Project<br>LandslideGuard · 2025–26</div>',
         unsafe_allow_html=True,
     )
 
