@@ -17,38 +17,20 @@ Implements:
 
 from __future__ import annotations
 
-import datetime as _dt
-from datetime import timezone
 from typing import Any
 import pandas as pd
-import plotly.express as px
 import plotly.graph_objects as go
 import streamlit as st
 from streamlit_folium import st_folium
 
-from src.database.db import get_table_counts
-from src.database.models import get_alerts, get_locations, get_recent_predictions
+from src.database.models import get_locations
 from src.geospatial.maps import build_landslide_map
 from src.ui.components import (
-    experimental_banner,
     make_sparkline_svg,
     render_footer,
     render_topbar,
 )
-from src.ui.theme import (
-    BORDER_DEFAULT,
-    CYAN,
-    PRIMARY_BLUE,
-    RISK_CRITICAL,
-    RISK_HIGH,
-    RISK_LOW,
-    RISK_MODERATE,
-    TEXT_DIM,
-    TEXT_MAIN,
-    TEXT_MUTED,
-    VIOLET,
-    style_fig,
-)
+from src.ui.theme import TEXT_MAIN
 
 
 def render_overview_dashboard(
@@ -100,9 +82,6 @@ def render_overview_dashboard(
     # SECTION 6: Five Equal-Sized Horizontal KPI Cards
     # ─────────────────────────────────────────────
     locs_df = get_locations()
-    counts = get_table_counts()
-    recent_preds = get_recent_predictions(limit=100)
-    alerts_all = get_alerts(include_acknowledged=False, limit=100)
 
     total_locations = 1248
     total_historical = 3672
@@ -213,7 +192,7 @@ def render_overview_dashboard(
     col_map, col_right = st.columns([1.64, 1])
 
     with col_map:
-        st.markdown(f"""
+        st.markdown("""
         <div class="lg-map-card">
             <div class="lg-map-card-header">
                 <div style="display:flex; align-items:center; gap:0.65rem;">
