@@ -349,7 +349,6 @@ def _apply_scenario_preset() -> None:
 # ─────────────────────────────────────────────
 
 PAGES = [
-    "🌐 Home & Showcase",
     "🏠 Overview",
     "📡 Live Monitoring",
     "🔮 Risk Analysis",
@@ -365,6 +364,7 @@ PAGES = [
     "🔐 Admin Panel",
     "🗄️ Data Management",
     "⚙️ Settings",
+    "🌐 Home & Showcase",
 ]
 
 with st.sidebar:
@@ -455,22 +455,22 @@ with st.sidebar:
 
 
 # ═══════════════════════════════════════════════════════════════
-# PAGE: HOME & SHOWCASE (LANDING PAGE)
+# PAGE 1: EXECUTIVE OVERVIEW DASHBOARD (PRIMARY DEFAULT VIEW)
 # ═══════════════════════════════════════════════════════════════
 
-if page in ("🌐 Home & Showcase", "🌐 Landing Page"):
-    df = load_dataset()
-    model_info = load_model_info()
-    render_landing_page(df=df, model_info=model_info)
-
-# ═══════════════════════════════════════════════════════════════
-# PAGE 1: EXECUTIVE OVERVIEW DASHBOARD
-# ═══════════════════════════════════════════════════════════════
-
-elif page in ("🏠 Overview", "🏠 Executive Overview"):
+if page in ("🏠 Overview", "🏠 Executive Overview"):
     df = load_dataset()
     model_info = load_model_info()
     render_overview_dashboard(df=df, model_info=model_info)
+
+# ═══════════════════════════════════════════════════════════════
+# PAGE: HOME & SHOWCASE (LANDING PAGE)
+# ═══════════════════════════════════════════════════════════════
+
+elif page in ("🌐 Home & Showcase", "🌐 Landing Page"):
+    df = load_dataset()
+    model_info = load_model_info()
+    render_landing_page(df=df, model_info=model_info)
 
 
 # ═══════════════════════════════════════════════════════════════
