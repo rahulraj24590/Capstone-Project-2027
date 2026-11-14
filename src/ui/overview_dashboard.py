@@ -96,11 +96,6 @@ def render_overview_dashboard(
     </div>
     """, unsafe_allow_html=True)
 
-    experimental_banner(
-        "Environmental feeds combine Open-Meteo model reanalysis and SRTM terrain attributes. "
-        "All risk estimates are academic research outputs and must never replace official GSI / NDMA advisories."
-    )
-
     # ─────────────────────────────────────────────
     # SECTION 6: Five Equal-Sized Horizontal KPI Cards
     # ─────────────────────────────────────────────
@@ -589,41 +584,31 @@ def render_overview_dashboard(
     st.markdown("<div style='height: 1.5rem;'></div>", unsafe_allow_html=True)
 
     # ─────────────────────────────────────────────
-    # Station Surveillance Activity Table
+    # Optional Station Surveillance Activity & Data Registry Drawer
     # ─────────────────────────────────────────────
-    st.markdown(f"""
-    <div style="background:{BORDER_DEFAULT}44; border:1px solid {BORDER_DEFAULT}; border-radius:12px; padding:0.65rem 1rem; margin-bottom:0.75rem; display:flex; justify-content:space-between; align-items:center;">
-        <div style="font-weight:800; color:{TEXT_MAIN}; font-size:0.95rem;">
-            📋 Monitored Station Surveillance Activity
-        </div>
-        <span style="font-size:0.75rem; color:{PRIMARY_BLUE}; font-weight:600;">
-            ● SQLite Dynamic Store Synchronized
-        </span>
-    </div>
-    """, unsafe_allow_html=True)
-
-    if not locs_df.empty:
-        display_rows = []
-        for idx, row in locs_df.iterrows():
-            name = str(row.get("name", "Station"))
-            state = str(row.get("state_region", "India"))
-            lat = float(row.get("latitude", 0.0))
-            lon = float(row.get("longitude", 0.0))
-            elev = float(row.get("elevation_m", 0.0) or 0.0)
-            slope = float(row.get("slope_degrees", 0.0) or 0.0)
-            risk = "Critical" if "Wayanad" in name else ("High" if "Munnar" in name or "Joshimath" in name else "Low")
-            display_rows.append({
-                "Station Name": name,
-                "State / Region": state,
-                "Coordinates": f"{lat:.4f}°N, {lon:.4f}°E",
-                "Elevation (m)": f"{elev:.0f} m",
-                "Slope (°)": f"{slope:.1f}°",
-                "Assessed Risk Tier": risk,
-                "Telemetry Status": "Live Active (Open-Meteo)",
-            })
-        st.dataframe(pd.DataFrame(display_rows), width="stretch", hide_index=True)
-    else:
-        st.info("No monitoring stations loaded. Visit 'Live Monitoring' to initialize default stations.")
+    with st.expander("📋 Monitored Station Surveillance Activity & SQLite Registry", expanded=False):
+        if not locs_df.empty:
+            display_rows = []
+            for idx, row in locs_df.iterrows():
+                name = str(row.get("name", "Station"))
+                state = str(row.get("state_region", "India"))
+                lat = float(row.get("latitude", 0.0))
+                lon = float(row.get("longitude", 0.0))
+                elev = float(row.get("elevation_m", 0.0) or 0.0)
+                slope = float(row.get("slope_degrees", 0.0) or 0.0)
+                risk = "Critical" if "Wayanad" in name else ("High" if "Munnar" in name or "Joshimath" in name else "Low")
+                display_rows.append({
+                    "Station Name": name,
+                    "State / Region": state,
+                    "Coordinates": f"{lat:.4f}°N, {lon:.4f}°E",
+                    "Elevation (m)": f"{elev:.0f} m",
+                    "Slope (°)": f"{slope:.1f}°",
+                    "Assessed Risk Tier": risk,
+                    "Telemetry Status": "Live Active (Open-Meteo)",
+                })
+            st.dataframe(pd.DataFrame(display_rows), width="stretch", hide_index=True)
+        else:
+            st.info("No monitoring stations loaded. Visit 'Live Monitoring' to initialize default stations.")
 
     # Enterprise Footer
     render_footer()
