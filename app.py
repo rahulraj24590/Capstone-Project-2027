@@ -376,7 +376,7 @@ with st.sidebar:
             </div>
             <div>
                 <div style="font-size:1.15rem; font-weight:800; color:#F8FAFC; letter-spacing:-0.02em; line-height:1.1;">
-                    Landslide<span style="color:#2196F3;">Guard</span>
+                    Landslide<span style="color:#38BDF8;">Guard</span>
                 </div>
                 <div style="font-size:0.68rem; font-weight:700; color:#A8B6CC; letter-spacing:0.06em; text-transform:uppercase;">
                     ENVIRONMENTAL SAAS v{APP_VERSION}
