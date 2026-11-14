@@ -22,14 +22,12 @@ import plotly.express as px
 import streamlit as st
 
 from src.database.db import get_table_counts
-from src.database.models import get_locations, get_recent_predictions
+from src.database.models import get_locations
 from src.ui.components import render_footer
 from src.ui.theme import (
     BG_CARD,
     BORDER_DEFAULT,
-    BORDER_GLOW,
     CYAN,
-    GRADIENT_BLUE,
     GRADIENT_VIOLET,
     HERO_IMG_LEFT,
     HERO_IMG_RIGHT,
@@ -38,7 +36,6 @@ from src.ui.theme import (
     RISK_HIGH,
     RISK_LOW,
     RISK_MODERATE,
-    TEXT_DIM,
     TEXT_MAIN,
     TEXT_MUTED,
     style_fig,
